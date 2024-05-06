@@ -33,7 +33,7 @@ player_speedy = 0
 
 # Controlador de velocidade do jogo 
 clock = pygame.time.Clock()
-FPS = 30
+FPS = 50
 
 
 
@@ -57,6 +57,8 @@ while game:
                 player_speedx -= 8
             if event.key == pygame.K_RIGHT:
                 player_speedx += 8
+            if event.key == pygame.K_SPACE:
+                player_speedy -= 8
         # Verifica se soltou alguma tecla.
         if event.type == pygame.KEYUP:
             # Dependendo da tecla, altera a velocidade.
@@ -64,6 +66,8 @@ while game:
                 player_speedx += 8
             if event.key == pygame.K_RIGHT:
                 player_speedx -= 8
+            if event.key == pygame.K_SPACE:
+                player_speedy += 8
 
     
     # Gera saídas
