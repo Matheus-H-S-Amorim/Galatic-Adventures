@@ -21,7 +21,7 @@ font = pygame.font.SysFont(None,48)
 background = pygame.image.load('assets/img/fundo_campo.jpg').convert()
 background_small= pygame.transform.scale(background, (WIDTH,HEIGHT))
 
-player_img = pygame.image.load('assets/img/menino_bone.png').convert_alpha()
+player_img = pygame.image.load('assets/img/astronauta/tile001.png').convert_alpha()
 player_img_small= pygame.transform.scale(player_img, (player_WIDTH, player_HEIGHT))
 
 
