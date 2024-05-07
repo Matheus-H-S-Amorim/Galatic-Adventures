@@ -3,7 +3,8 @@ import random
 from os import path
 
 # Estabelece a pasta que contem as figuras e sons.
-img_dir = 
+img_dir = pygame.image.load('assets/img/fundo_campo.jpg').convert()
+
 
 
 
