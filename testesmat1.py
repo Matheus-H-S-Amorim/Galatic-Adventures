@@ -4,7 +4,7 @@
 #Importa e inicia pacotes 
 import pygame 
 pygame.init()
-
+import random
 
 #Gera tela principal
 WIDTH = 1300
@@ -17,13 +17,11 @@ pygame.display.set_caption('Jogo do Astronauta!')
 player_WIDTH= 200
 player_HEIGHT = 200
 
-font = pygame.font.SysFont(None,48)
 background = pygame.image.load('assets/img/fundo_campo.jpg').convert()
 background_small= pygame.transform.scale(background, (WIDTH,HEIGHT))
 
 player_img = pygame.image.load('assets/img/astronauta/tile001.png').convert_alpha()
 player_img_small= pygame.transform.scale(player_img, (player_WIDTH, player_HEIGHT))
-
 
 #player configurações
 player_x = 0
@@ -31,14 +29,15 @@ player_y = HEIGHT-player_HEIGHT-60
 player_speedx = 0
 player_speedy = 0
 
+
 # Controlador de velocidade do jogo 
 clock = pygame.time.Clock()
 FPS = 50
 
 
-
 # Inicia jogo 
 game = True 
+
 
 
 # Loop do jogo 
@@ -59,6 +58,7 @@ while game:
                 player_speedx += 8
             if event.key == pygame.K_SPACE:
                 player_speedy -= 8
+
         # Verifica se soltou alguma tecla.
         if event.type == pygame.KEYUP:
             # Dependendo da tecla, altera a velocidade.
@@ -68,6 +68,7 @@ while game:
                 player_speedx -= 8
             if event.key == pygame.K_SPACE:
                 player_speedy += 8
+        
 
     
     # Gera saídas
@@ -85,7 +86,6 @@ while game:
 
 # Finalização 
 pygame.quit()  # Função do PyGame que finaliza os recursos utilizados
-
 
 
 
