@@ -1,155 +1,198 @@
-# -*- coding: utf-8 -*-
+################################################## INICIALIZAÇÃO #######################################################################
 
-# Importando as bibliotecas necessárias.
-import pygame
+#Importa e inicia os pacotes 
+import pygame    
+pygame.init()
 import random
-from os import path
 
-# Estabelece a pasta que contem as figuras e sons.
-img_dir = path.join(path.dirname(__file__), 'img')
+#Tela do Jogo 
+WIDTH = 1300                                                  # Largura 
+HEIGHT = 650                                                  # Altura 
+window = pygame.display.set_mode((WIDTH, HEIGHT))             # Cria Janela com Largura e Altura 
+pygame.display.set_caption('Jogo do Astronauta!')             # Título da Janela 
 
-# Dados gerais do jogo.
-TITULO = 'Exemplo de Pulo'
-WIDTH = 480 # Largura da tela
-HEIGHT = 600 # Altura da tela
-FPS = 60 # Frames por segundo
+#Inicia assests
+player_WIDTH= 100
+player_HEIGHT = 100
+meteoro_WIDTH = 150           #POR IMGS METEORO E ESTRELA
+meteoro_HEIGHT = 150
+star_WIDTH = 50
+star_HEIGHT = 50 
 
-# Define algumas variáveis com as cores básicas
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-YELLOW = (255, 255, 0)
+background = pygame.image.load('assets/img/fundo_planeta_vermelho.png').convert()
+background_small= pygame.transform.scale(background, (WIDTH,HEIGHT))
 
-# Define a aceleração da gravidade
-GRAVITY = 2
-# Define a velocidade inicial no pulo
-JUMP_SIZE = 30
-# Define a altura do chão
-GROUND = HEIGHT * 5 // 6
+player_img = pygame.image.load('assets/img/astronauta/tile001.png').convert_alpha()
+player_img_small= pygame.transform.scale(player_img, (player_WIDTH, player_HEIGHT))
 
-# Define estados possíveis do jogador
-STILL = 0
-JUMPING = 1
-FALLING = 2
+star_img = pygame.image.load('assets/img/estrela.webp').convert_alpha()
+star_img_small= pygame.transform.scale(star_img, (star_WIDTH, star_HEIGHT))
 
-# Classe Jogador que representa o herói
+meteoro_img = pygame.image.load('assets/img/Meteoro.png').convert_alpha()
+meteoro_img_small= pygame.transform.scale(meteoro_img, (meteoro_WIDTH, meteoro_HEIGHT))
+
+
+################# CONFIGURACOES 
+# Gravidade
+GRAVIDADE = 0.7
+# Velocidade inicial  pulo
+TAM_PULO = 20
+# Atura do chão
+CHAO = HEIGHT - 70
+
+# POSSIVEIS ESTADOS DO PLAYER
+PARADO = 0                       # Parado 
+PULANDO = 1                     # Pulando 
+CAINDO = 2                     # Caindo 
+
+# Controlador de velocidade do jogo 
+clock = pygame.time.Clock()
+FPS = 50
+
+
+################ CLASSES
+
+#Classe do Jogador 
 class Player(pygame.sprite.Sprite):
+    def __init__(self, img):
 
-    # Construtor da classe.
-    def __init__(self, player_img):
+        pygame.sprite.Sprite.__init__(self) # constói classe mAe (Sprite)
 
-        # Construtor da classe pai (Sprite).
-        pygame.sprite.Sprite.__init__(self)
+        self.state = PARADO                         # Estado do Player              # Player Parado 
+        self.image = img                            # Imagemn 
+        self.rect = self.image.get_rect()           # Área de contato do Player 
+        self.rect.centerx = WIDTH/8    #  WIDTH//2  # Centro 
+        self.bottom = HEIGHT - 70                   # Base = GRWOND (para ficar no chao)
+        self.rect.top = HEIGHT - player_HEIGHT      # Topo 
+        self.speedy = 0                             # Velocidade zerada 
+        self.speedx = 0 #tirar dps pq n mexe em x
 
-        # Define estado atual
-        # Usamos o estado para decidir se o jogador pode ou não pular
-        self.state = STILL
 
-        # Aumenta o tamanho da imagem para ficar mais fácil de ver
-        player_img = pygame.transform.scale(player_img, (100, 160))
-
-        # Define a imagem do sprite. Nesse exemplo vamos usar uma imagem estática (não teremos animação durante o pulo)
-        self.image = player_img
-        # Detalhes sobre o posicionamento.
-        self.rect = self.image.get_rect()
-
-        # Começa no topo da janela e cai até o chão
-        self.rect.centerx = WIDTH / 2
-        self.rect.top = 0
-
-        self.speedy = 0
-
-    # Metodo que atualiza a posição do personagem
+    # Atualiza Posição do Player
     def update(self):
-        self.speedy += GRAVITY
-        # Atualiza o estado para caindo
-        if self.speedy > 0:
-            self.state = FALLING
-        self.rect.y += self.speedy
+        self.speedy += GRAVIDADE                      # Velocidade de queda é a Gravidade 
+        self.rect.y += self.speedy                  # Área de contato do player recebe velocidade e se move 
+
+        self.rect.x += self.speedx
+
+        if self.rect.bottom > CHAO:               # Muda estado: Player caindo 
+            self.state = CAINDO  
+            
         # Se bater no chão, para de cair
-        if self.rect.bottom > GROUND:
+        if self.rect.bottom > CHAO:
             # Reposiciona para a posição do chão
-            self.rect.bottom = GROUND
+            self.rect.bottom = CHAO
             # Para de cair
             self.speedy = 0
             # Atualiza o estado para parado
-            self.state = STILL
-
-    # Método que faz o personagem pular
+            self.state = PARADO
+    
+    # Método para PULAR 
     def jump(self):
-        # Só pode pular se ainda não estiver pulando ou caindo
-        if self.state == STILL:
-            self.speedy -= JUMP_SIZE
-            self.state = JUMPING
+        if self.state == PARADO:                   # ATIVADO: pulo único            # Desativado: Pulo Múltiplo
+            self.speedy -= TAM_PULO
+            self.state = PULANDO
+
+##Classe das estrelas: 
+class Stars(pygame.sprite.Sprite):
+    def __init__(self, img):
+
+        pygame.sprite.Sprite.__init__(self) 
+
+        self.state = PARADO 
+        self.image = img  
+        self.rect = self.image.get_rect() 
+        self.rect.centerx = WIDTH-200 
+        self.bottom = HEIGHT - 60                   # Base = GRWOND (para ficar no chao)
+        self.rect.top = HEIGHT - 120                # Topo 
+        self.speedy = 0                             # Velocidade zerada 
+        self.speedx = 0                             #Estrela fica parada 
+
+##Classe dos meteoros: 
+class Meteoros(pygame.sprite.Sprite):
+    def __init__(self, img):
+
+        pygame.sprite.Sprite.__init__(self) 
+
+        self.state = PARADO 
+        self.image = img  
+        self.rect = self.image.get_rect() 
+        self.rect.centerx = WIDTH-200 
+        self.bottom = HEIGHT -10                # Base = GRWOND (para ficar no chao)
+        self.rect.top = HEIGHT - 300            # Topo 
+        self.speedy = 0                         # Velocidade zerada 
+        self.speedx = 0                         #Estrela fica parada 
+
+# Inicia jogo 
+game = True 
+
+#Cria grupo de Sprites 
+all_sprites = pygame.sprite.Group()
+all_meteoros = pygame.sprite.Group()
+all_stars = pygame.sprite.Group() 
+
+#Cria player  
+player = Player(player_img_small)
+all_sprites.add(player) 
+
+#Cria stars 
+star = Stars(star_img_small)
+all_sprites.add(star)  
+all_stars.add(star) 
+
+#Cria Meteoros 
+meteoros = Meteoros(meteoro_img_small) 
+all_sprites.add(meteoros)  
+all_meteoros.add(meteoros) 
+
+# Cria meteoros                                         <<----------------- FAZER METEOROS E ESTRELAS
+#or i in range (8): criar meterorosss V12 linha 119
+
+# Estados do JOGO 
+JOGANDO = 0
+ACABADO = 1
+
+#################################  LOOP PRINCIPAL    ###############################################################################
+modo = JOGANDO
+while modo!= ACABADO:
+    clock.tick(FPS)                 # Velocidade do Jogo 
+
+    # Processa todos os eventos que estão acontecendo (mouse, teclado, botão, etc).
+    for event in pygame.event.get():
+
+        # Se Fechou Jogo 
+        if event.type == pygame.QUIT:
+            modo = ACABADO
+
+        # Se Apertou Tecla 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
+                player.jump()
+
+        ##########  MOVIMENTAÇÃO OPCIONAL NO EIXO X ########################
+        if event.type == pygame.KEYDOWN:
+            # Dependendo da tecla, altera a velocidade.
+            if event.key == pygame.K_LEFT:
+                player.speedx -= 8
+            if event.key == pygame.K_RIGHT:
+                player.speedx += 8
+
+        if event.type == pygame.KEYUP:
+            # Dependendo da tecla, altera a velocidade.
+            if event.key == pygame.K_LEFT:
+                player.speedx += 8
+            if event.key == pygame.K_RIGHT:
+                player.speedx -= 8
+        #####################################################################
+    
+
+    # Para cada loop:
+    all_sprites.update()                           #Atualiza as ações de todos os sprites 
+    window.fill((0,0,0))                           # Pinta fundo de preto 
+    window.blit(background_small, (0, 0))          # Plota cenário como background     
+    all_sprites.draw(window)                       # Desenha todos os sprites 
+    pygame.display.update()                        # Mostra novo frame com altereações # Dá para usar pygame.display.flip() também  
 
 
-def game_screen(screen):
-    # Variável para o ajuste de velocidade
-    clock = pygame.time.Clock()
-
-    # Carrega imagem
-    player_img = pygame.image.load(path.join(img_dir, 'hero-single.png')).convert_alpha()
-
-    # Cria Sprite do jogador
-    player = Player(player_img)
-    # Cria um grupo de todos os sprites e adiciona o jogador.
-    all_sprites = pygame.sprite.Group()
-    all_sprites.add(player)
-
-    PLAYING = 0
-    DONE = 1
-
-    state = PLAYING
-    while state != DONE:
-
-        # Ajusta a velocidade do jogo.
-        clock.tick(FPS)
-
-        # Processa os eventos (mouse, teclado, botão, etc).
-        for event in pygame.event.get():
-
-            # Verifica se foi fechado.
-            if event.type == pygame.QUIT:
-                state = DONE
-
-            # Verifica se soltou alguma tecla.
-            if event.type == pygame.KEYDOWN:
-                # Dependendo da tecla, altera o estado do jogador.
-                if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
-                    player.jump()
-
-        # Depois de processar os eventos.
-        # Atualiza a acao de cada sprite. O grupo chama o método update() de cada Sprite dentre dele.
-        all_sprites.update()
-
-        # A cada loop, redesenha o fundo e os sprites
-        screen.fill(BLACK)
-        all_sprites.draw(screen)
-
-        # Depois de desenhar tudo, inverte o display.
-        pygame.display.flip()
-
-
-# Inicialização do Pygame.
-pygame.init()
-pygame.mixer.init()
-
-# Tamanho da tela.
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-
-# Nome do jogo
-pygame.display.set_caption(TITULO)
-
-# Imprime instruções
-print('*' * len(TITULO))
-print(TITULO.upper())
-print('*' * len(TITULO))
-print('Utilize a tecla "ESPAÇO" ou seta para cima para pular.')
-
-# Comando para evitar travamentos.
-try:
-    game_screen(screen)
-finally:
-    pygame.quit()
+###################################################### FINALIZAÇÃO ##################################################################
+pygame.quit()  # Finaliza o jogo cancelando todos os recursos que foram utilizados aqui no joguinhoo
