@@ -117,11 +117,26 @@ class Meteoros(pygame.sprite.Sprite):
         self.state = PARADO 
         self.image = img  
         self.rect = self.image.get_rect() 
-        self.rect.centerx = WIDTH-200 
-        self.bottom = HEIGHT -10                # Base = GRWOND (para ficar no chao)
-        self.rect.top = HEIGHT - 300            # Topo 
-        self.speedy = 0                         # Velocidade zerada 
-        self.speedx = 0                         #Estrela fica parada 
+        self.rect.centerx = WIDTH -200 
+        self.bottom = random.randint(0, HEIGHT-meteoro_HEIGHT)                     #HEIGHT -10                # Base = GRWOND (para ficar no chao)
+        self.rect.top = self.bottom -  meteoro_HEIGHT       # Topo 
+        #self.rect.y = [self.bottom,self.rect.top ]         #Eixo y 
+        self.speedy = random.randint(-3, 3)                 # Velocidade em y 
+        self.speedx = random.randint(2, 9)                  #Velocidade em x  
+
+    #ATUALIZANDO A POSIÇÃO DO METEORO: 
+
+    def update(self):
+         self.rect.centerx += self.speedx
+         self.rect.y += self.speedy
+         # Se o meteoro passar do final da tela, volta e sorteia novas posições e velocidades
+         if self.rect.top > HEIGHT or self.rect.right < 0 or self.rect.left > WIDTH:
+             self.rect.centerx = random.randint(0, WIDTH-meteoro_WIDTH)
+             #self.rect.y = random.randint(-100, -meteoro_HEIGHT)
+             self.bottom = random.randint(0, HEIGHT-meteoro_HEIGHT)
+             self.rect.top = self.bottom -  meteoro_HEIGHT
+             self.speedx = random.randint(-3, 3)
+             self.speedy = random.randint(2, 9)              
 
 # Inicia jogo 
 game = True 
