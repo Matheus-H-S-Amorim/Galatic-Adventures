@@ -141,9 +141,17 @@ all_sprites.add(star)
 all_stars.add(star) 
 
 #Cria Meteoros 
-meteoros = Meteoros(meteoro_img_small) 
-all_sprites.add(meteoros)  
-all_meteoros.add(meteoros) 
+# meteoros = Meteoros(meteoro_img_small) 
+# all_sprites.add(meteoros)  
+# all_meteoros.add(meteoros) 
+
+# Adicionando mais meteoros: 
+n_meteoros = 8
+
+for i in range(n_meteoros): 
+    meteoro = Meteoros(meteoro_img_small) 
+    all_sprites.add(meteoro)  
+    all_meteoros.add(meteoro) 
 
 # Cria meteoros                                         <<----------------- FAZER METEOROS E ESTRELAS
 #or i in range (8): criar meterorosss V12 linha 119
