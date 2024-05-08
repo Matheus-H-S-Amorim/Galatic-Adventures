@@ -17,8 +17,8 @@ player_WIDTH= 100
 player_HEIGHT = 100
 meteoro_WIDTH = 200            #POR IMGS METEORO E ESTRELA
 meteoro_HEIGHT = 200
-star_WIDTH = 200
-star_HEIGHT = 200 
+star_WIDTH = 50
+star_HEIGHT = 50 
 
 background = pygame.image.load('assets/img/fundo_planeta_vermelho.png').convert()
 background_small= pygame.transform.scale(background, (WIDTH,HEIGHT))
@@ -26,11 +26,11 @@ background_small= pygame.transform.scale(background, (WIDTH,HEIGHT))
 player_img = pygame.image.load('assets/img/astronauta/tile001.png').convert_alpha()
 player_img_small= pygame.transform.scale(player_img, (player_WIDTH, player_HEIGHT))
 
-star_img = pygame.image.load('assets/img/astronauta/tile001.png').convert_alpha()
-star_img_small= pygame.transform.scale(player_img, (player_WIDTH, player_HEIGHT))
+star_img = pygame.image.load('assets/img/estrela.webp').convert_alpha()
+star_img_small= pygame.transform.scale(star_img, (star_WIDTH, star_HEIGHT))
 
-meteoro_img = pygame.image.load('assets/img/astronauta/tile001.png').convert_alpha()
-meteoro_img= pygame.transform.scale(player_img, (player_WIDTH, player_HEIGHT))
+meteoro_img = pygame.image.load('assets/img/Meteoro.png').convert_alpha()
+meteoro_img= pygame.transform.scale(meteoro_img, (meteoro_WIDTH, meteoro_HEIGHT))
 
 
 ################# CONFIGURACOES 
@@ -59,10 +59,10 @@ class Player(pygame.sprite.Sprite):
 
         pygame.sprite.Sprite.__init__(self) # constói classe mAe (Sprite)
 
-        self.state = PARADO                          # Estado do Player              # Player Parado 
+        self.state = PARADO                         # Estado do Player              # Player Parado 
         self.image = img                            # Imagemn 
         self.rect = self.image.get_rect()           # Área de contato do Player 
-        self.rect.centerx = WIDTH/8 #WIDTH / 2               # Centro 
+        self.rect.centerx = WIDTH/8    #  WIDTH//2  # Centro 
         self.bottom = HEIGHT - 70                   # Base = GRWOND (para ficar no chao)
         self.rect.top = HEIGHT - player_HEIGHT      # Topo 
         self.speedy = 0                             # Velocidade zerada 
@@ -95,6 +95,20 @@ class Player(pygame.sprite.Sprite):
         self.speedy -= TAM_PULO
         self.state = PULANDO
 
+##Classe das estrelas: 
+class Stars(pygame.sprite.Sprite):
+    def __init__(self, img):
+
+        pygame.sprite.Sprite.__init__(self) 
+
+        self.state = PARADO 
+        self.image = img  
+        self.rect = self.image.get_rect() 
+        self.rect.centerx = WIDTH-200 
+        self.bottom = HEIGHT - 60                   # Base = GRWOND (para ficar no chao)
+        self.rect.top = HEIGHT - 120       # Topo 
+        self.speedy = 0                             # Velocidade zerada 
+        self.speedx = 0                             #Estrela fica parada 
 
 # Inicia jogo 
 game = True 
@@ -102,10 +116,16 @@ game = True
 #Cria grupo de Sprites 
 all_sprites = pygame.sprite.Group()
 all_meteoros = pygame.sprite.Group()
+all_stars = pygame.sprite.Group() 
 
 #Cria player  
 player = Player(player_img_small)
-all_sprites.add(player)
+all_sprites.add(player) 
+
+#Cria stars 
+star = Stars(star_img_small)
+all_sprites.add(star)  
+all_stars.add(star)
 
 # Cria meteoros                                         <<----------------- FAZER METEOROS E ESTRELAS
 #or i in range (8): criar meterorosss V12 linha 119
