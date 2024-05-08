@@ -87,13 +87,12 @@ class Player(pygame.sprite.Sprite):
             self.speedy = 0
             # Atualiza o estado para parado
             self.state = PARADO
-        
     
     # Método para PULAR 
     def jump(self):
-        # if self.state == STILL:                   # ATIVADO: pulo único            # Desativado: Pulo Múltiplo
-        self.speedy -= TAM_PULO
-        self.state = PULANDO
+        if self.state == PARADO:                   # ATIVADO: pulo único            # Desativado: Pulo Múltiplo
+            self.speedy -= TAM_PULO
+            self.state = PULANDO
 
 
 # Inicia jogo 
@@ -156,11 +155,14 @@ while modo!= ACABADO:
     pygame.display.update()                        # Mostra novo frame com altereações # Dá para usar pygame.display.flip() também  
 
 
+###################################################### FINALIZAÇÃO ##################################################################
 pygame.quit()  # Finaliza o jogo cancelando todos os recursos que foram utilizados aqui no joguinhoo
 
 
 
 
+
+#################################################### RASCUNHOS #########################################################################
 #Classe do Meteoro 
 # class Meteoro(pygame.sprite.Sprite):
 #     def __init__(self, img):
