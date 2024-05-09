@@ -74,8 +74,8 @@ class Player(pygame.sprite.Sprite):
         
         self.rect = self.image.get_rect()           # Área de contato do Player 
         self.rect.centerx = WIDTH/8    #  WIDTH//2  # Centro 
-        self.bottom = HEIGHT - 70                   # Base = GRWOND (para ficar no chao)
-        self.rect.top = HEIGHT -70 - player_HEIGHT  # Topo 
+        self.bottom = CHAO                   # Base = GRWOND (para ficar no chao)
+        self.rect.top = CHAO - player_HEIGHT  # Topo 
         self.speedy = 0                             # Velocidade zerada 
         self.speedx = 0 #tirar dps pq n mexe em x
 
@@ -131,9 +131,9 @@ class Stars(pygame.sprite.Sprite):
         self.state = PARADO 
         self.image = img  
         self.rect = self.image.get_rect() 
-        self.rect.centerx = WIDTH-200 
-        self.bottom = HEIGHT - 60                   # Base = GRWOND (para ficar no chao)
-        self.rect.top = HEIGHT - 120       # Topo 
+        self.rect.centerx = WIDTH-200  
+        self.bottom = CHAO                   # Base = GRWOND (para ficar no chao)
+        self.rect.top = CHAO - star_HEIGHT        # Topo 
         self.speedy = 0                             # Velocidade zerada 
         self.speedx = 0                             #Estrela fica parada 
 
@@ -196,6 +196,10 @@ while modo!= ACABADO:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_g:
                 GRAVIDADE*=-1
+        #COlisao 
+        if  pygame.sprite.spritecollide(player,all_stars,True):
+            star.kill()
+
 
         #####################################################################
     
