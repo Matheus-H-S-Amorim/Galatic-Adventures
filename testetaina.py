@@ -19,7 +19,7 @@ meteoro_HEIGHT = 150
 star_WIDTH = 50
 star_HEIGHT = 50 
 
-background = pygame.image.load('assets/img/fundo_planeta_vermelho.png').convert()
+background = pygame.image.load('assets/img/fundo/fundo_planeta_vermelho.png').convert()
 background_small= pygame.transform.scale(background, (WIDTH,HEIGHT))
 
 player_img = pygame.image.load('assets/img/astronauta/tile001.png').convert_alpha()
@@ -216,6 +216,6 @@ while modo!= ACABADO:
     all_sprites.draw(window)                       # Desenha todos os sprites 
     pygame.display.update()                        # Mostra novo frame com altereações # Dá para usar pygame.display.flip() também  
 
-
+s
 ###################################################### FINALIZAÇÃO ##################################################################
 pygame.quit()  # Finaliza o jogo cancelando todos os recursos que foram utilizados aqui no joguinhoo

@@ -105,7 +105,7 @@ class Stars(pygame.sprite.Sprite):
         self.rect = self.image.get_rect() 
         self.rect.centerx = WIDTH-200 
         self.bottom = HEIGHT - 60                   # Base = GRWOND (para ficar no chao)
-        self.rect.top = HEIGHT - 120       # Topo 
+        self.rect.top = HEIGHT - 120                # Topo 
         self.speedy = 0                             # Velocidade zerada 
         self.speedx = 0                             #Estrela fica parada 
 
