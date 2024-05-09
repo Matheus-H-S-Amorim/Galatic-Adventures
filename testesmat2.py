@@ -39,7 +39,7 @@ meteoro_img= pygame.transform.scale(meteoro_img, (meteoro_WIDTH, meteoro_HEIGHT)
 # Gravidade
 GRAVIDADE = 0.7
 # Velocidade inicial  pulo
-TAM_PULO = 20
+TAM_PULO = 10
 # Atura do chão
 CHAO = HEIGHT - 70
 
@@ -47,10 +47,11 @@ CHAO = HEIGHT - 70
 PARADO = 0                       # Parado 
 PULANDO = 1                     # Pulando 
 CAINDO = 2                     # Caindo 
+ANDANDO = 3 
 
 # Controlador de velocidade do jogo 
 clock = pygame.time.Clock()
-FPS = 15
+FPS = 10
 
 
 
@@ -93,6 +94,10 @@ class Player(pygame.sprite.Sprite):
             self.index = 0 
 
         self.image = self.images[self.index]
+
+        # Nao faz animacao se tiver parado ou pulando 
+        if self.state==PARADO or self.state==PULANDO: 
+            self.index = 0 
                 
 
         if self.rect.bottom > CHAO:               # Muda estado: Player caindo 
@@ -106,7 +111,11 @@ class Player(pygame.sprite.Sprite):
             self.speedy = 0
             # Atualiza o estado para parado
             self.state = PARADO
-    
+        
+        # Se tiver andando, muda state para andandoo
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                state = ANDANDO    
     # Método para PULAR 
     def jump(self):
         # if self.state == PARADO:                   # ATIVADO: pulo único            # Desativado: Pulo Múltiplo
@@ -173,16 +182,21 @@ while modo!= ACABADO:
         if event.type == pygame.KEYDOWN:
             # Dependendo da tecla, altera a velocidade.
             if event.key == pygame.K_LEFT:
-                player.speedx -= 8
+                player.speedx -= 16
             if event.key == pygame.K_RIGHT:
-                player.speedx += 8
+                player.speedx += 16
 
         if event.type == pygame.KEYUP:
             # Dependendo da tecla, altera a velocidade.
             if event.key == pygame.K_LEFT:
-                player.speedx += 8
+                player.speedx += 16
             if event.key == pygame.K_RIGHT:
-                player.speedx -= 8
+                player.speedx -= 16
+        
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_g:
+                GRAVIDADE*=-1
+
         #####################################################################
     
 
