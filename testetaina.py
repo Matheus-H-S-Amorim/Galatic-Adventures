@@ -216,6 +216,6 @@ while modo!= ACABADO:
     all_sprites.draw(window)                       # Desenha todos os sprites 
     pygame.display.update()                        # Mostra novo frame com altereações # Dá para usar pygame.display.flip() também  
 
-s
+
 ###################################################### FINALIZAÇÃO ##################################################################
 pygame.quit()  # Finaliza o jogo cancelando todos os recursos que foram utilizados aqui no joguinhoo
