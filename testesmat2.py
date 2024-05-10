@@ -1,7 +1,8 @@
 ################################################## INICIALIZAÇÃO #######################################################################
 
 #Importa e inicia os pacotes 
-import pygame    
+import pygame
+import pygame.draw    
 pygame.init()
 import random
 import assets 
@@ -17,8 +18,8 @@ pygame.display.set_caption('Jogo do Astronauta!')             # Título da Janel
 assets = load_assets() 
 player_WIDTH= 100
 player_HEIGHT = 100
-meteoro_WIDTH = 200            #POR IMGS METEORO E ESTRELA
-meteoro_HEIGHT = 200
+meteoro_WIDTH = 125            #POR IMGS METEORO E ESTRELA
+meteoro_HEIGHT = 125
 star_WIDTH = 50
 star_HEIGHT = 50 
 
@@ -32,14 +33,14 @@ star_img = pygame.image.load('assets/img/estrela.webp').convert_alpha()
 star_img_small= pygame.transform.scale(star_img, (star_WIDTH, star_HEIGHT))
 
 meteoro_img = pygame.image.load('assets/img/Meteoro.png').convert_alpha()
-meteoro_img= pygame.transform.scale(meteoro_img, (meteoro_WIDTH, meteoro_HEIGHT))
+meteoro_img_small= pygame.transform.scale(meteoro_img, (meteoro_WIDTH, meteoro_HEIGHT))
 
 
 ################# CONFIGURACOES 
 # Gravidade
-GRAVIDADE = 0.7
+GRAVIDADE = 2
 # Velocidade inicial  pulo
-TAM_PULO = 10
+TAM_PULO = 14 
 # Atura do chão
 CHAO = HEIGHT - 70
 
@@ -51,9 +52,7 @@ ANDANDO = 3
 
 # Controlador de velocidade do jogo 
 clock = pygame.time.Clock()
-FPS = 20
-
-
+FPS = 30
 
 ################ CLASSES
 
@@ -70,20 +69,17 @@ class Player(pygame.sprite.Sprite):
         self.index = 0 
         self.image = self.images[self.index]  
         
-        
-        
         self.rect = self.image.get_rect()           # Área de contato do Player 
         self.rect.centerx = WIDTH/8    #  WIDTH//2  # Centro 
         self.bottom = CHAO                   # Base = GRWOND (para ficar no chao)
-        self.rect.top = CHAO - player_HEIGHT  # Topo 
+        self.rect.top = HEIGHT- player_HEIGHT -500 # Topo 
         self.speedy = 0                             # Velocidade zerada 
         self.speedx = 0 #tirar dps pq n mexe em x
-        
-
-
 
     # Atualiza Posição do Player     <------ SIMPLIFICAR
     def update(self,assets):
+        pygame.draw.rect(window,(0,0,0),player.rect) # ver rect
+
         self.speedy += GRAVIDADE                      # Velocidade de queda é a Gravidade 
         self.rect.y += self.speedy                  # Área de contato do player recebe velocidade e se move 
         self.rect.x += self.speedx
@@ -118,10 +114,16 @@ class Player(pygame.sprite.Sprite):
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 self.state = ANDANDO    
 
-        # nao ultrpassa teto 
+        # nao ultrpassa teto e laterais  
         if self.rect.top<0:
             self.speedy = 0
             self.rect.top = -0
+
+        if self.rect.centerx>WIDTH:
+            self.rect.centerx = WIDTH
+        
+        if self.rect.centerx<0: 
+            self.rect.centerx = 0
 
     # Método para PULAR 
     def jump(self):
@@ -134,6 +136,7 @@ class Player(pygame.sprite.Sprite):
         if self.state == PULANDO:
             self.speedy -= TAM_PULO 
             self.state = PULANDO
+
 
 ##Classe das estrelas: 
 class Stars(pygame.sprite.Sprite):
@@ -149,6 +152,41 @@ class Stars(pygame.sprite.Sprite):
         self.rect.top = CHAO - star_HEIGHT        # Topo 
         self.speedy = 0                             # Velocidade zerada 
         self.speedx = 0                             #Estrela fica parada 
+
+    def update(self,assets):         
+         pygame.draw.rect(window,(0,0,0),star.rect) # ver rect 
+
+
+##Classe dos meteoros: 
+class Meteoros(pygame.sprite.Sprite):
+    def __init__(self, img,assets):
+
+        pygame.sprite.Sprite.__init__(self) 
+
+        self.state = PARADO 
+        self.image = img  
+        self.rect = self.image.get_rect() 
+        self.rect.centerx = WIDTH -200 
+        self.bottom = meteoro_HEIGHT                        #random.randint(0, HEIGHT-(500+meteoro_HEIGHT))    #HEIGHT -10    # Base = GRWOND (para ficar no chao)
+        self.rect.top = 0                                   #self.bottom -  meteoro_HEIGHT       # Topo 
+        #self.rect.y = [self.bottom,self.rect.top ]         #Eixo y 
+        self.speedx = random.randint(-3, 3)                 # Velocidade em y 
+        self.speedy = random.randint(2, 7)                  #Velocidade em x  
+
+    #ATUALIZANDO A POSIÇÃO DO METEORO: 
+
+    def update(self,assets):
+         pygame.draw.rect(window,(0,0,0),meteoro.rect)   # ver rect 
+         self.rect.centerx += self.speedx
+         self.rect.y += self.speedy
+         # Se o meteoro passar do final da tela, volta e sorteia novas posições e velocidades
+         if self.rect.top > HEIGHT or self.rect.right < 0 or self.rect.left > WIDTH:
+             self.rect.centerx = random.randint(0, WIDTH-meteoro_WIDTH)
+             #self.rect.y = random.randint(-100, -meteoro_HEIGHT)
+             self.bottom = meteoro_HEIGHT
+             self.rect.top = 0
+             self.speedx = random.randint(-3, 3)
+             self.speedy = random.randint(2, 7)       
 
 # Inicia jogo 
 game = True 
@@ -167,12 +205,22 @@ star = Stars(star_img_small,assets)
 all_sprites.add(star)  
 all_stars.add(star)
 
-# Cria meteoros                                         <<----------------- FAZER METEOROS E ESTRELAS
-#or i in range (8): criar meterorosss V12 linha 119
+#Cria Meteoros 
+# Adicionando mais meteoros: 
+n_meteoros = 5 
+
+for i in range(n_meteoros): 
+    meteoro = Meteoros(meteoro_img_small,assets) 
+    all_sprites.add(meteoro)  
+    all_meteoros.add(meteoro) 
 
 # Estados do JOGO 
 JOGANDO = 0
 ACABADO = 1
+
+# Contador de mortes 
+mortes = 0 
+
 
 #################################  LOOP PRINCIPAL    ###############################################################################
 modo = JOGANDO
@@ -196,26 +244,39 @@ while modo!= ACABADO:
             # Dependendo da tecla, altera a velocidade.
             if event.key == pygame.K_LEFT:
                 player.speedx -= 16
+                player.state = ANDANDO
+
             if event.key == pygame.K_RIGHT:
                 player.speedx += 16
+                player.state = ANDANDO
 
         if event.type == pygame.KEYUP:
             # Dependendo da tecla, altera a velocidade.
             if event.key == pygame.K_LEFT:
                 player.speedx += 16
+
             if event.key == pygame.K_RIGHT:
                 player.speedx -= 16
         
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_g:
                 GRAVIDADE*=-1
-        #COlisao 
-        if  pygame.sprite.spritecollide(player,all_stars,True):
+    
+    #COlisao 
+    if  pygame.sprite.spritecollide(player,all_stars,True):
             star.kill()
+    if  pygame.sprite.spritecollide(player,all_meteoros,False):
+        player.kill()
+            # mortes +=1
+            # print(mortes)
+            # if mortes>(3*FPS): 
+            #     player.kill()
+        
 
+        
+    
 
         #####################################################################
-    
 
     # Para cada loop:
     all_sprites.update(assets)                           #Atualiza as ações de todos os sprites 
@@ -225,3 +286,7 @@ while modo!= ACABADO:
     all_sprites.draw(window)                       # Desenha todos os sprites 
     pygame.display.update()                        # Mostra novo frame com altereações # Dá para usar pygame.display.flip() também  
     pygame.display.flip()
+
+###################################################### FINALIZAÇÃO ##################################################################
+pygame.quit()  # Finaliza o jogo cancelando todos os recursos que foram utilizados aqui no joguinhoo
+
