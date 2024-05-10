@@ -14,12 +14,12 @@ pygame.display.set_caption('Jogo do Astronauta!')             # Título da Janel
 #Inicia assests
 player_WIDTH= 100
 player_HEIGHT = 100
-meteoro_WIDTH = 150           #POR IMGS METEORO E ESTRELA
-meteoro_HEIGHT = 150
+meteoro_WIDTH = 125           #POR IMGS METEORO E ESTRELA
+meteoro_HEIGHT = 125
 star_WIDTH = 50
 star_HEIGHT = 50 
 
-background = pygame.image.load('assets/img/fundo/fundo_planeta_vermelho.png').convert()
+background = pygame.image.load('assets/img/fundo_planeta_vermelho.png').convert() #'assets/img/fundo/fundo_planeta_vermelho.png'
 background_small= pygame.transform.scale(background, (WIDTH,HEIGHT))
 
 player_img = pygame.image.load('assets/img/astronauta/tile001.png').convert_alpha()
@@ -118,11 +118,11 @@ class Meteoros(pygame.sprite.Sprite):
         self.image = img  
         self.rect = self.image.get_rect() 
         self.rect.centerx = WIDTH -200 
-        self.bottom = random.randint(0, HEIGHT-meteoro_HEIGHT)                     #HEIGHT -10                # Base = GRWOND (para ficar no chao)
-        self.rect.top = self.bottom -  meteoro_HEIGHT       # Topo 
+        self.bottom = meteoro_HEIGHT                        #random.randint(0, HEIGHT-(500+meteoro_HEIGHT))    #HEIGHT -10    # Base = GRWOND (para ficar no chao)
+        self.rect.top = 0                                   #self.bottom -  meteoro_HEIGHT       # Topo 
         #self.rect.y = [self.bottom,self.rect.top ]         #Eixo y 
-        self.speedy = random.randint(-3, 3)                 # Velocidade em y 
-        self.speedx = random.randint(2, 9)                  #Velocidade em x  
+        self.speedx = random.randint(-3, 3)                 # Velocidade em y 
+        self.speedy = random.randint(2, 7)                  #Velocidade em x  
 
     #ATUALIZANDO A POSIÇÃO DO METEORO: 
 
@@ -133,10 +133,10 @@ class Meteoros(pygame.sprite.Sprite):
          if self.rect.top > HEIGHT or self.rect.right < 0 or self.rect.left > WIDTH:
              self.rect.centerx = random.randint(0, WIDTH-meteoro_WIDTH)
              #self.rect.y = random.randint(-100, -meteoro_HEIGHT)
-             self.bottom = random.randint(0, HEIGHT-meteoro_HEIGHT)
-             self.rect.top = self.bottom -  meteoro_HEIGHT
+             self.bottom = meteoro_HEIGHT
+             self.rect.top = 0
              self.speedx = random.randint(-3, 3)
-             self.speedy = random.randint(2, 9)              
+             self.speedy = random.randint(2, 7)       
 
 # Inicia jogo 
 game = True 
@@ -155,21 +155,18 @@ star = Stars(star_img_small)
 all_sprites.add(star)  
 all_stars.add(star) 
 
-#Cria Meteoros 
+#Cria Meteoros (fica)
 # meteoros = Meteoros(meteoro_img_small) 
 # all_sprites.add(meteoros)  
 # all_meteoros.add(meteoros) 
 
 # Adicionando mais meteoros: 
-n_meteoros = 8
+n_meteoros = 5 
 
 for i in range(n_meteoros): 
     meteoro = Meteoros(meteoro_img_small) 
     all_sprites.add(meteoro)  
     all_meteoros.add(meteoro) 
-
-# Cria meteoros                                         <<----------------- FAZER METEOROS E ESTRELAS
-#or i in range (8): criar meterorosss V12 linha 119
 
 # Estados do JOGO 
 JOGANDO = 0
