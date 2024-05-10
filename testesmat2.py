@@ -78,6 +78,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.top = CHAO - player_HEIGHT  # Topo 
         self.speedy = 0                             # Velocidade zerada 
         self.speedx = 0 #tirar dps pq n mexe em x
+        
 
 
 
