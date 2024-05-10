@@ -116,6 +116,12 @@ class Player(pygame.sprite.Sprite):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 self.state = ANDANDO    
+
+        # nao ultrpassa teto 
+        if self.rect.top<0:
+            self.speedy = 0
+            self.rect.top = -0
+
     # Método para PULAR 
     def jump(self):
         # if self.state == PARADO:                   # ATIVADO: pulo único            # Desativado: Pulo Múltiplo
@@ -131,7 +137,7 @@ class Stars(pygame.sprite.Sprite):
         self.state = PARADO 
         self.image = img  
         self.rect = self.image.get_rect() 
-        self.rect.centerx = WIDTH-200  
+        self.rect.centerx = WIDTH-200 
         self.bottom = CHAO                   # Base = GRWOND (para ficar no chao)
         self.rect.top = CHAO - star_HEIGHT        # Topo 
         self.speedy = 0                             # Velocidade zerada 
