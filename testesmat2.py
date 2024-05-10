@@ -96,11 +96,11 @@ class Player(pygame.sprite.Sprite):
         self.image = self.images[self.index]
 
         # Nao faz animacao se tiver parado ou pulando 
-        if self.state==PARADO or self.state==PULANDO: 
+        if self.state==PARADO or self.state==PULANDO or self.state==CAINDO: 
             self.index = 0 
                 
 
-        if self.rect.bottom > CHAO:               # Muda estado: Player caindo 
+        if self.speedy > 0:               # Muda estado: Player caindo 
             self.state = CAINDO  
             
         # Se bater no chão, para de cair
@@ -124,9 +124,15 @@ class Player(pygame.sprite.Sprite):
 
     # Método para PULAR 
     def jump(self):
-        # if self.state == PARADO:                   # ATIVADO: pulo único            # Desativado: Pulo Múltiplo
-        self.speedy -= TAM_PULO
-        self.state = PULANDO
+        if self.state == PARADO or self.state == ANDANDO:                   # ATIVADO: pulo único            # Desativado: Pulo Múltiplo
+            self.speedy -= TAM_PULO
+            self.state = PULANDO
+        if self.state == CAINDO:
+            self.speedy -= 2*TAM_PULO - GRAVIDADE
+            self.state = PULANDO
+        if self.state == PULANDO:
+            self.speedy -= TAM_PULO 
+            self.state = PULANDO
 
 ##Classe das estrelas: 
 class Stars(pygame.sprite.Sprite):
