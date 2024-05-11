@@ -280,7 +280,6 @@ while modo!= ACABADO:
 
     # Para cada loop:
     all_sprites.update(assets)                           #Atualiza as ações de todos os sprites 
-    pygame.display.update()   
     window.fill((0,0,0))                           # Pinta fundo de preto 
     window.blit(background_small, (0, 0))          # Plota cenário como background     
     all_sprites.draw(window)                       # Desenha todos os sprites 
