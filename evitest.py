@@ -107,6 +107,7 @@ class Player(pygame.sprite.Sprite):
 
     # Atualiza Posição do Player     <------ SIMPLIFICAR
     def update(self,assets):
+        
         self.speedy += GRAVIDADE                      # Velocidade de queda é a Gravidade 
         self.rect.y += self.speedy                  # Área de contato do player recebe velocidade e se move 
         self.rect.x += self.speedx
@@ -195,6 +196,8 @@ ACABADO = 1
 # window.blit(background_small, (0, 0))          # Plota cenário como background     
 
 def modo_jogo (window):
+    GRAVIDADE = 0.7
+
     clock = pygame.time.Clock()
     
     assets = load_assets(IMG_DIR)
@@ -205,9 +208,20 @@ def modo_jogo (window):
     background = pygame.transform.scale(background, (WIDTH, HEIGHT))
     background_rect = background.get_rect()
 
+
+
+    #Cria grupo de Sprites 
+    all_sprites = pygame.sprite.Group()
+    all_stars = pygame.sprite.Group() 
+
     #Cria player  
     player = Player(assets[ANIMACAO_ASTRONA])
     all_sprites.add(player)
+
+    #Cria stars 
+    star = Stars(star_img_small,assets)
+    all_sprites.add(star)  
+    all_stars.add(star)
 
     modo = JOGANDO
 
@@ -220,37 +234,35 @@ def modo_jogo (window):
 
             # Se Fechou Jogo 
             if event.type == pygame.QUIT:
-                modo = ACABADO
-
-        all_sprites.update(assets)                          #Atualiza as ações de todos os sprites 
-        
+                modo = ACABADO        
                     # Se Apertou Tecla 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
-                player.jump()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
+                    player.jump()
 
-        ##########  MOVIMENTAÇÃO OPCIONAL NO EIXO X ########################
-        if event.type == pygame.KEYDOWN:
-            # Dependendo da tecla, altera a velocidade.
-            if event.key == pygame.K_LEFT:
-                player.speedx -= 16
-            if event.key == pygame.K_RIGHT:
-                player.speedx += 16
+            ##########  MOVIMENTAÇÃO OPCIONAL NO EIXO X ########################
+            if event.type == pygame.KEYDOWN:
+                # Dependendo da tecla, altera a velocidade.
+                if event.key == pygame.K_g:
+                    GRAVIDADE*=-1
+                if event.key == pygame.K_LEFT:
+                    player.speedx -= 16
+                if event.key == pygame.K_RIGHT:
+                    player.speedx += 16
 
-        if event.type == pygame.KEYUP:
-            # Dependendo da tecla, altera a velocidade.
-            if event.key == pygame.K_LEFT:
-                player.speedx += 16
-            if event.key == pygame.K_RIGHT:
-                player.speedx -= 16
-        
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_g:
-                GRAVIDADE*=-1
+            if event.type == pygame.KEYUP:
+                # Dependendo da tecla, altera a velocidade.
+                if event.key == pygame.K_LEFT:
+                    player.speedx += 16
+                if event.key == pygame.K_RIGHT:
+                    player.speedx -= 16
+                            
+            #all_sprites.update(assets)                          #Atualiza as ações de todos os sprites 
+
         #COlisao 
         if  pygame.sprite.spritecollide(player,all_stars,True):
             star.kill()
-        
+
         window.fill(BLACK)
 
         # background_rect = background.get_rect()
@@ -270,6 +282,7 @@ def modo_jogo (window):
         window.blit(background, background_rect2)
 
         all_sprites.draw(window)
+        all_sprites.update(assets)                   #Atualiza as ações de todos os sprites 
 
         # Depois de desenhar tudo, inverte o display.
         pygame.display.flip()

@@ -1,12 +1,16 @@
 import pygame 
 import os 
 
-from config import IMG_DIR, SND_DIR
-
+#from config import IMG_DIR, SND_DIR
+from config import *
 ANIMACAO_ASTRONA = "animacao_astrona"
+BACKGROUND_IMG = 'fundo_jogo'
 
 def load_assets():
     assets = {} # Cria dicionário
+
+    assets[BACKGROUND_IMG] = pygame.image.load(path.join(IMG_DIR, 'fundo\\fundo_planeta_vermelho.png')).convert()
+
 
     animacao_astrona = []
     for i in range(8):
