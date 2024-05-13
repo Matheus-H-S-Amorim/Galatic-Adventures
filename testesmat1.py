@@ -12,6 +12,7 @@ from assets import load_assets,ANIMACAO_ASTRONA
 from assets import *
 from config import *
 from os import *
+import numpy as np 
 
 #Tela do Jogo 
 WIDTH = 1300                                                  # Largura 
@@ -30,8 +31,8 @@ world_speed = -10
 assets = load_assets() 
 player_WIDTH= 100
 player_HEIGHT = 100
-meteoro_WIDTH = 125         
-meteoro_HEIGHT = 125
+meteoro_WIDTH = 80        
+meteoro_HEIGHT = 80
 star_WIDTH = 50
 star_HEIGHT = 50 
 
@@ -169,44 +170,46 @@ class Stars(pygame.sprite.Sprite):
     def __init__(self, img,assets):
 
         pygame.sprite.Sprite.__init__(self) 
+        self.area_nascer = np.arange(star_WIDTH, WIDTH+100,50)
+
 
         self.state = PARADO 
         self.image = img  
         self.rect = self.image.get_rect() 
-        self.rect.centerx = random.randint(0,(WIDTH))  
-        self.bottom = random.randint(0,(HEIGHT-15))                   # Base = GRWOND (para ficar no chao)
+        self.rect.centerx = random.choice(self.area_nascer)
+        self.bottom = random.randint(0,CHAO)                   # Base = GRWOND (para ficar no chao)
         self.rect.top = self.bottom - star_HEIGHT   # Topo 
-        self.speedx = 0                             # Velocidade zerada 
-        self.speedy = 0                             #Estrela fica parada 
+        self.speedx = -5                            # Velocidade zerada 
+        self.speedy = 5                           #Estrela fica parada 
 
     #ATUALIZANDO A POSIÇÃO DA ESTRELA: 
 
     def update(self,assets):
-         self.rect.centerx += self.speedx
-         self.rect.y += self.speedy
-         # Se o estrela passar do final da tela, volta e sorteia novas posições e velocidades
-         if self.rect.top > HEIGHT or self.rect.right < 0 or self.rect.left > WIDTH:
-             self.rect.centerx = random.randint(0, WIDTH-star_WIDTH)
-             self.bottom = star_HEIGHT 
-             self.rect.top = 0
-             self.speedx = 0 #random.randint(-3, 3)
-             self.speedy = 0 #random.randint(2, 7)  
+        self.rect.centerx += self.speedx
+        self.rect.y += self.speedy
+        # Se o estrela passar do final da tela, volta e sorteia novas posições e velocidades
+        if self.bottom > CHAO or self.rect.right < 0: #or self.rect.left > WIDTH:
+            self.rect.centerx = random.choice(self.area_nascer)
+            self.bottom =  random.randint(0,CHAO)                # Base = GRWOND (para ficar no chao)
+            self.rect.top = self.bottom - star_HEIGHT   # Topo 
+            self.speedx = -5                            # Velocidade zerada 
+            self.speedy = 5
 
+        
 ##Classe dos meteoros: 
 class Meteoros(pygame.sprite.Sprite):
     def __init__(self, img,assets):
 
         pygame.sprite.Sprite.__init__(self) 
-
-        self.state = PARADO 
+        #self.state = PARADO 
         self.image = img  
         self.rect = self.image.get_rect() 
-        self.rect.centerx = WIDTH -200 
-        self.bottom = meteoro_HEIGHT                        #random.randint(0, HEIGHT-(500+meteoro_HEIGHT))    #HEIGHT -10    # Base = GRWOND (para ficar no chao)
-        self.rect.top = 0                                   #self.bottom -  meteoro_HEIGHT       # Topo 
+        self.rect.centerx = WIDTH + meteoro_WIDTH  
+        self.bottom = random.randint(meteoro_HEIGHT, CHAO)                      #random.randint(0, HEIGHT-(500+meteoro_HEIGHT))    #HEIGHT -10    # Base = GRWOND (para ficar no chao)
+        self.rect.top = self.bottom-meteoro_HEIGHT                                   #self.bottom -  meteoro_HEIGHT       # Topo 
         #self.rect.y = [self.bottom,self.rect.top ]         #Eixo y 
-        self.speedx = random.randint(-3, -1)                 # Velocidade em y 
-        self.speedy = random.randint(2, 7)                  #Velocidade em x  
+        self.speedx = random.choice(([-25,-15]))             # Velocidade em y 
+        self.speedy = 1 #random.randint(2, 7)                  #Velocidade em x  
 
     #ATUALIZANDO A POSIÇÃO DO METEORO: 
 
@@ -214,13 +217,13 @@ class Meteoros(pygame.sprite.Sprite):
          self.rect.centerx += self.speedx
          self.rect.y += self.speedy
          # Se o meteoro passar do final da tela, volta e sorteia novas posições e velocidades
-         if self.rect.top > HEIGHT or self.rect.right < 0 or self.rect.left > WIDTH:
-             self.rect.centerx = random.randint(0, WIDTH-meteoro_WIDTH)
-             #self.rect.y = random.randint(-100, -meteoro_HEIGHT)
-             self.bottom = meteoro_HEIGHT
-             self.rect.top = 0
-             self.speedx = random.randint(-3, -1)
-             self.speedy = random.randint(2, 7)       
+         if self.rect.top > HEIGHT or self.rect.right < 0: # or self.rect.left > WIDTH:
+            self.rect.centerx = WIDTH + meteoro_WIDTH #random.randint(0, WIDTH-meteoro_WIDTH)
+            #self.rect.y = random.randint(-100, -meteoro_HEIGHT)
+            self.bottom = random.randint(meteoro_HEIGHT, CHAO)                      #random.randint(0, HEIGHT-(500+meteoro_HEIGHT))    #HEIGHT -10    # Base = GRWOND (para ficar no chao)
+            self.rect.top = self.bottom-meteoro_HEIGHT    
+            self.speedx = random.choice([-25,-15,-10])
+            self.speedy = 1    
 
 
 
@@ -231,7 +234,7 @@ all_stars = pygame.sprite.Group()
 
 #Cria stars 
 # Adicionando mais estrelas:
-n_estrelas= 7
+n_estrelas= 5
 
 for i in range(n_estrelas): 
     estrela = Stars(star_img_small,assets) 
@@ -240,7 +243,7 @@ for i in range(n_estrelas):
 
 #Cria Meteoros 
 # Adicionando mais meteoros: 
-n_meteoros = 5 
+n_meteoros = 3
 
 for i in range(n_meteoros): 
     meteoro = Meteoros(meteoro_img_small,assets) 
