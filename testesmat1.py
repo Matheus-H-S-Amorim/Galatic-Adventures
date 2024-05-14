@@ -93,6 +93,9 @@ class Player(pygame.sprite.Sprite):
         self.state = ANDANDO #PARADO                         # Estado do Player              # Player Parado 
         
         # Animar player 
+        self.indo_direita = False 
+        self.indo_esquerda = False  
+
         self.images = assets[ANIMACAO_ASTRONA]  # Pega lista de frames 
         self.index = 0 
         self.image = self.images[self.index]  
@@ -107,6 +110,7 @@ class Player(pygame.sprite.Sprite):
     # Atualiza Posição do Player     <------ SIMPLIFICAR
     def update(self,assets):
         # pygame.draw.rect(window,(0,0,0),self.rect) # ver rect
+        
 
         self.speedy += self.gravidade #GRAVIDADE                      # Velocidade de queda é a Gravidade 
         self.rect.y += self.speedy                  # Área de contato do player recebe velocidade e se move 
@@ -117,9 +121,28 @@ class Player(pygame.sprite.Sprite):
         
         if self.index >=len(self.images):
             self.index = 0 
+        
+        self.image = self.images[self.index] 
+        img_n_invertida = self.image
 
-        self.image = self.images[self.index]
+        if self.gravidade<0: 
+            x = 100
+            y = 100
+            img_invetida_y = pygame.transform.flip (self.image, False, True)
+            self.image = img_invetida_y
+        
+        if self.indo_esquerda == True: 
+            img_invetida_x = pygame.transform.flip (self.image, True, False)
+            self.image = img_invetida_x
+        
+        if self.indo_direita == True: 
+            #img_invetida_x = pygame.transform.flip (self.image, True, False)
+            self.image = img_n_invertida
 
+
+
+
+        
         # Nao faz animacao se tiver parado ou pulando 
         if self.state==PARADO or self.state==PULANDO or self.state==CAINDO: 
             self.index = 0 
@@ -152,6 +175,11 @@ class Player(pygame.sprite.Sprite):
         
         if self.rect.centerx<0: 
             self.rect.centerx = 0
+        
+    def vira(self): 
+        x = 100
+        y = 100
+        window.blit(pygame.transform.flip (self.image, False, True), (x, y))
 
     # Método para PULAR 
     def jump(self):
@@ -254,11 +282,14 @@ for i in range(n_meteoros):
 JOGANDO = 0
 ACABADO = 1
 
+# Fases 
+Fase1 = "F1"
+Fase2 = "F2"
+
 #################################  LOOP PRINCIPAL    ###############################################################################
 
 
 # window.blit(background_small, (0, 0))          # Plota cenário como background     
-
 def modo_jogo (window):
 
     clock = pygame.time.Clock()
@@ -275,6 +306,8 @@ def modo_jogo (window):
     player = Player(player_img_small,assets)#assets[ANIMACAO_ASTRONA])
     all_sprites.add(player)
 
+    vidas = 3
+    score = 0 
     modo = JOGANDO
 
 
@@ -300,9 +333,13 @@ def modo_jogo (window):
                 # Dependendo da tecla, altera a velocidade.
                 if event.key == pygame.K_LEFT:
                     player.speedx -= 13
+                    player.indo_esquerda = True
+                    player.indo_direita = False 
                     #player.state = ANDANDO
 
                 if event.key == pygame.K_RIGHT:
+                    player.indo_direita = True 
+                    player.indo_esquerda = False 
                     player.speedx += 13
                     #player.state = ANDANDO
 
@@ -310,23 +347,49 @@ def modo_jogo (window):
                 # Dependendo da tecla, altera a velocidade.
                 if event.key == pygame.K_LEFT:
                     player.speedx += 13
+                    player.vira()
 
                 if event.key == pygame.K_RIGHT:
                     player.speedx -= 13
+                    player.vira()
             
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_g:
                     player.gravidade*=-1
         
         #COlisao 
-        if  pygame.sprite.spritecollide(player,all_stars,True):
-            estrela.kill()
-        if  pygame.sprite.spritecollide(player,all_meteoros,False):
-            player.kill()
-            # mortes +=1
-            # print(mortes)
-            # if mortes>(3*FPS): 
-            #     player.kill()
+        # Estrelas 
+        estrelas_tocadas = pygame.sprite.spritecollide(player,all_stars,True)  # lista de estrelas tocadas por player q saiem de all_stars
+        if len(estrelas_tocadas)>0: 
+            # Recria as estrelas
+            for estrela_tocada in estrelas_tocadas: 
+                nov_estrela = Stars(star_img_small,assets)   ############ criar nv estrela e por em grupos  E MSM COM METEORORS<----
+                all_sprites.add(nov_estrela)
+                all_stars.add(nov_estrela)
+                score+=1 # Muda pontuação 
+        # Meteoros 
+        meteroros_tocados = pygame.sprite.spritecollide(player,all_meteoros,True)
+        if len(meteroros_tocados)>0: 
+            vidas -=1 
+            # Recria meteoros 
+            for meteoro_tocado in meteroros_tocados: 
+                nov_meteoro = Meteoros(meteoro_img_small,assets)
+                all_sprites.add(nov_meteoro)
+                all_meteoros.add(nov_meteoro)
+
+            # Player com 3 vidas 
+            print(vidas)
+            if vidas>0:
+                all_sprites.add(player)
+
+            elif vidas<=0: 
+                player.kill()
+                modo = ACABADO
+        
+
+            print(vidas)
+            print(score)
+            
         
 
 
