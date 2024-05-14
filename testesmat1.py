@@ -116,32 +116,28 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.speedy                  # Área de contato do player recebe velocidade e se move 
         self.rect.x += self.speedx
 
-        
+        # Animação a partir de indice de lista de imagens 
         self.index +=1
-        
         if self.index >=len(self.images):
             self.index = 0 
-        
         self.image = self.images[self.index] 
+        
         img_n_invertida = self.image
 
+        # Inverte imagem em Y 
         if self.gravidade<0: 
             x = 100
             y = 100
             img_invetida_y = pygame.transform.flip (self.image, False, True)
             self.image = img_invetida_y
         
+        # Inverte imagem em X 
         if self.indo_esquerda == True: 
             img_invetida_x = pygame.transform.flip (self.image, True, False)
             self.image = img_invetida_x
         
         if self.indo_direita == True: 
-            #img_invetida_x = pygame.transform.flip (self.image, True, False)
             self.image = img_n_invertida
-
-
-
-
         
         # Nao faz animacao se tiver parado ou pulando 
         if self.state==PARADO or self.state==PULANDO or self.state==CAINDO: 
