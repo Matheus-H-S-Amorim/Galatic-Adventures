@@ -19,11 +19,6 @@ HEIGHT = 650                                                  # Altura
 window = pygame.display.set_mode((WIDTH, HEIGHT))             # Cria Janela com Largura e Altura 
 pygame.display.set_caption('Jogo do Astronauta!')             # Título da Janela 
 
-BLACK =(0,0,0)
-
-IMG_DIR = path.join(path.dirname(__file__), 'assets', 'img')
-SND_DIR = path.join(path.dirname(__file__), 'assets', 'snd')
-
 world_speed = -10
 
 #Inicia assests
