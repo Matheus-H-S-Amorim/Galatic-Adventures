@@ -14,7 +14,7 @@ def load_assets():
     assets = {} # Cria dicionário
 
     assets[BACKGROUND_IMG] = pygame.image.load(path.join(IMG_DIR, 'fundo\\fundo_planeta_vermelho.png')).convert()
-    assets[SOM_FUNDO] = pygame.mixer.Sound(os.path.join(SND_DIR, 'som_suspense.mp3'))
+    assets[SOM_FUNDO] = pygame.mixer.Sound(path.join(SND_DIR, 'som_suspense.mp3'))
 
     animacao_astrona = []
     for i in range(8):

@@ -308,8 +308,7 @@ def modo_jogo (window):
 
     modo = JOGANDO
 
-    # SOm de fundo 
-    pygame.mixer.Sound.set_volume(0.4)
+    # Som de fundo 
     assets[SOM_FUNDO].play(-1)
 
 
