@@ -1,8 +1,11 @@
-import pygame 
-import os 
+from os import *
+import numpy as np
+import random
+import pygame
 
-#from config import IMG_DIR, SND_DIR
-from config import *
+# ATALHOS para Pastas com Figuras e Sons 
+IMG_DIR = path.join(path.dirname(__file__), 'assets', 'img')
+SND_DIR = path.join(path.dirname(__file__), 'assets', 'snd')
 ANIMACAO_ASTRONA = "animacao_astrona"
 BACKGROUND_IMG = 'fundo_jogo'
 SOM_FUNDO = "som_fundo"
@@ -16,7 +19,7 @@ def load_assets():
     animacao_astrona = []
     for i in range(8):
         # Os arquivos de animação são numerados de 00 a 40
-        filename = os.path.join(IMG_DIR, 'astronauta_anda','tile{}.png'.format(i))
+        filename = path.join(IMG_DIR, 'astronauta_anda','tile{}.png'.format(i))
         img = pygame.image.load(filename).convert()
         img = pygame.transform.scale(img, (100, 100))
         animacao_astrona.append(img)
