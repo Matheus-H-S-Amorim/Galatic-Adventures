@@ -5,12 +5,13 @@ import os
 from config import *
 ANIMACAO_ASTRONA = "animacao_astrona"
 BACKGROUND_IMG = 'fundo_jogo'
+SOM_FUNDO = "som_fundo"
 
 def load_assets():
     assets = {} # Cria dicionário
 
     assets[BACKGROUND_IMG] = pygame.image.load(path.join(IMG_DIR, 'fundo\\fundo_planeta_vermelho.png')).convert()
-
+    assets[SOM_FUNDO] = pygame.mixer.Sound(os.path.join(SND_DIR, 'som_suspense.mp3'))
 
     animacao_astrona = []
     for i in range(8):
@@ -22,3 +23,8 @@ def load_assets():
 
     assets[ANIMACAO_ASTRONA] = animacao_astrona
     return assets
+
+
+### COLOCAR SOM 
+#assets[SOM_FUNDO] = pygame.mixer.music.load(os.path.join(SND_DIR, 'som_suspense.mp3')) #pygame.mixer.Sound(os.path.join(SND_DIR, 'sound_suspense_galatic.mp3'))
+#pygame.mixer.music.set_volume(0.4)
