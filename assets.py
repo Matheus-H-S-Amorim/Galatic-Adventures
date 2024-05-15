@@ -8,13 +8,16 @@ IMG_DIR = path.join(path.dirname(__file__), 'assets', 'img')
 SND_DIR = path.join(path.dirname(__file__), 'assets', 'snd')
 ANIMACAO_ASTRONA = "animacao_astrona"
 BACKGROUND_IMG = 'fundo_jogo'
-SOM_FUNDO = "som_fundo"
+TELADEINICIO = 'tela_inicial'
+SOM_FUNDO = 'som_de_fundo'
 
 def load_assets():
     assets = {} # Cria dicionário
 
     assets[BACKGROUND_IMG] = pygame.image.load(path.join(IMG_DIR, 'fundo\\fundo_planeta_vermelho.png')).convert()
+    assets[TELADEINICIO] = pygame.image.load(path.join(IMG_DIR, 'fundo\\tela_inicial.png')).convert()
     assets[SOM_FUNDO] = pygame.mixer.Sound(path.join(SND_DIR, 'som_suspense.mp3'))
+
 
     animacao_astrona = []
     for i in range(8):

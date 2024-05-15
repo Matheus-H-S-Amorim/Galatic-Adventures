@@ -301,15 +301,10 @@ def modo_jogo (window):
     #Cria player  
     player = Player(player_img_small,assets)#assets[ANIMACAO_ASTRONA])
     all_sprites.add(player)
-    
-    # Vida e Score 
+
     vidas = 3
     score = 0 
-
     modo = JOGANDO
-
-    # Som de fundo 
-    assets[SOM_FUNDO].play(-1)
 
 
     while modo!= ACABADO:
