@@ -124,20 +124,27 @@ class Player(pygame.sprite.Sprite):
         
         img_n_invertida = self.image
 
-        # Inverte imagem em Y 
-        if self.gravidade<0: 
-            x = 100
-            y = 100
-            img_invetida_y = pygame.transform.flip (self.image, False, True)
-            self.image = img_invetida_y
-        
         # Inverte imagem em X 
         if self.indo_esquerda == True: 
             img_invetida_x = pygame.transform.flip (self.image, True, False)
             self.image = img_invetida_x
+            # Inverte imagem em Y 
+            if self.gravidade<0: 
+                img_invetida_y = pygame.transform.flip (self.image, False, True)
+                self.image = img_invetida_y
         
         if self.indo_direita == True: 
             self.image = img_n_invertida
+            # Inverte imagem em Y 
+            if self.gravidade<0: 
+                img_invetida_y = pygame.transform.flip (self.image, False, True)
+                self.image = img_invetida_y
+        # Inverte imagem em Y se liga gravidade parado 
+        if self.indo_direita==False and self.indo_esquerda==False and self.gravidade<0: 
+            img_invetida_y = pygame.transform.flip (self.image, False, True)
+            self.image = img_invetida_y
+
+
         
         # Nao faz animacao se tiver parado ou pulando 
         if self.state==PARADO or self.state==PULANDO or self.state==CAINDO: 
