@@ -359,7 +359,7 @@ def modo_jogo (window):
         text_surface = score_font.render(str(score), True, (255, 255, 0))
         text_rect = text_surface.get_rect()
         text_rect.midtop = (WIDTH / 2,  10)
-        window.blit(text_surface, text_rect)
+        window.blit(text_surface, text_rect) 
         
         # Para cada loop:
         all_sprites.update(assets)                #Atualiza as ações de todos os sprites 
