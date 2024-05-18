@@ -257,7 +257,7 @@ while modo!= ACABADO:
                 GRAVIDADE*=-1
         #COlisao 
         if  pygame.sprite.spritecollide(player,all_stars,True):
-            star.kill()
+            estrela.kill()
 
 
         #####################################################################

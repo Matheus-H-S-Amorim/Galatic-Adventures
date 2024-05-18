@@ -11,7 +11,8 @@ from assets import load_assets,ANIMACAO_ASTRONA
 # import assets 
 from assets import *
 from config import *
-from os import *
+from os import * 
+import numpy as np 
 
 #Tela do Jogo 
 WIDTH = 1300                                                  # Largura 
@@ -61,6 +62,8 @@ ANDANDO = 3
 # Controlador de velocidade do jogo 
 FPS = 30
 
+#Adicionando o placar: 
+score_font = pygame.font.Font(None, 50)  #Fonte de jogo 
 
 # Inicia jogo 
 game = True 
@@ -82,11 +85,14 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, img,assets):
 
         pygame.sprite.Sprite.__init__(self) # constói classe mAe (Sprite)
-        self.gravidade = 1.5
+        self.gravidade = 2
 
         self.state = ANDANDO #PARADO                         # Estado do Player              # Player Parado 
         
         # Animar player 
+        self.indo_direita = False 
+        self.indo_esquerda = False  
+
         self.images = assets[ANIMACAO_ASTRONA]  # Pega lista de frames 
         self.index = 0 
         self.image = self.images[self.index]  
@@ -101,19 +107,41 @@ class Player(pygame.sprite.Sprite):
     # Atualiza Posição do Player     <------ SIMPLIFICAR
     def update(self,assets):
         # pygame.draw.rect(window,(0,0,0),self.rect) # ver rect
+        
 
         self.speedy += self.gravidade #GRAVIDADE                      # Velocidade de queda é a Gravidade 
         self.rect.y += self.speedy                  # Área de contato do player recebe velocidade e se move 
         self.rect.x += self.speedx
 
-        
+        # Animação a partir de indice de lista de imagens 
         self.index +=1
-        
         if self.index >=len(self.images):
             self.index = 0 
+        self.image = self.images[self.index] 
+        
+        img_n_invertida = self.image
 
-        self.image = self.images[self.index]
+        # Inverte imagem em X 
+        if self.indo_esquerda == True: 
+            img_invetida_x = pygame.transform.flip (self.image, True, False)
+            self.image = img_invetida_x
+            # Inverte imagem em Y 
+            if self.gravidade<0: 
+                img_invetida_y = pygame.transform.flip (self.image, False, True)
+                self.image = img_invetida_y
+        
+        if self.indo_direita == True: 
+            self.image = img_n_invertida
+            # Inverte imagem em Y 
+            if self.gravidade<0: 
+                img_invetida_y = pygame.transform.flip (self.image, False, True)
+                self.image = img_invetida_y
+        # Inverte imagem em Y se liga gravidade parado 
+        if self.indo_direita==False and self.indo_esquerda==False and self.gravidade<0: 
+            img_invetida_y = pygame.transform.flip (self.image, False, True)
+            self.image = img_invetida_y
 
+            
         # Nao faz animacao se tiver parado ou pulando 
         if self.state==PARADO or self.state==PULANDO or self.state==CAINDO: 
             self.index = 0 
@@ -146,6 +174,11 @@ class Player(pygame.sprite.Sprite):
         
         if self.rect.centerx<0: 
             self.rect.centerx = 0
+        
+    def vira(self): 
+        x = 100
+        y = 100
+        window.blit(pygame.transform.flip (self.image, False, True), (x, y))
 
     # Método para PULAR 
     def jump(self):
@@ -164,44 +197,46 @@ class Stars(pygame.sprite.Sprite):
     def __init__(self, img,assets):
 
         pygame.sprite.Sprite.__init__(self) 
+        self.area_nascer = np.arange(star_WIDTH, WIDTH+100,50)
+
 
         self.state = PARADO 
         self.image = img  
         self.rect = self.image.get_rect() 
-        self.rect.centerx = random.randint(0,(WIDTH))  
-        self.bottom = random.randint(0,(HEIGHT-15))                   # Base = GRWOND (para ficar no chao)
+        self.rect.centerx = random.choice(self.area_nascer)
+        self.bottom = random.randint(0,CHAO)                   # Base = GRWOND (para ficar no chao)
         self.rect.top = self.bottom - star_HEIGHT   # Topo 
-        self.speedx = 0                             # Velocidade zerada 
-        self.speedy = 0                             #Estrela fica parada 
+        self.speedx = -5                            # Velocidade zerada 
+        self.speedy = 5                           #Estrela fica parada 
 
     #ATUALIZANDO A POSIÇÃO DA ESTRELA: 
 
     def update(self,assets):
-         self.rect.centerx += self.speedx
-         self.rect.y += self.speedy
-         # Se o estrela passar do final da tela, volta e sorteia novas posições e velocidades
-         if self.rect.top > HEIGHT or self.rect.right < 0 or self.rect.left > WIDTH:
-             self.rect.centerx = random.randint(0, WIDTH-star_WIDTH)
-             self.bottom = star_HEIGHT 
-             self.rect.top = 0
-             self.speedx = 0 #random.randint(-3, 3)
-             self.speedy = 0 #random.randint(2, 7)  
+        self.rect.centerx += self.speedx
+        self.rect.y += self.speedy
+        # Se o estrela passar do final da tela, volta e sorteia novas posições e velocidades
+        if self.bottom > CHAO or self.rect.right < 0: #or self.rect.left > WIDTH:
+            self.rect.centerx = random.choice(self.area_nascer)
+            self.bottom =  random.randint(0,CHAO)                # Base = GRWOND (para ficar no chao)
+            self.rect.top = self.bottom - star_HEIGHT   # Topo 
+            self.speedx = -5                            # Velocidade zerada 
+            self.speedy = 5
 
+        
 ##Classe dos meteoros: 
 class Meteoros(pygame.sprite.Sprite):
     def __init__(self, img,assets):
 
         pygame.sprite.Sprite.__init__(self) 
-
-        self.state = PARADO 
+        #self.state = PARADO 
         self.image = img  
         self.rect = self.image.get_rect() 
-        self.rect.centerx = WIDTH -200 
-        self.bottom = meteoro_HEIGHT                        #random.randint(0, HEIGHT-(500+meteoro_HEIGHT))    #HEIGHT -10    # Base = GRWOND (para ficar no chao)
-        self.rect.top = 0                                   #self.bottom -  meteoro_HEIGHT       # Topo 
+        self.rect.centerx = WIDTH + meteoro_WIDTH  
+        self.bottom = random.randint(meteoro_HEIGHT, CHAO)                      #random.randint(0, HEIGHT-(500+meteoro_HEIGHT))    #HEIGHT -10    # Base = GRWOND (para ficar no chao)
+        self.rect.top = self.bottom-meteoro_HEIGHT                                   #self.bottom -  meteoro_HEIGHT       # Topo 
         #self.rect.y = [self.bottom,self.rect.top ]         #Eixo y 
-        self.speedx = random.randint(-3, -1)                 # Velocidade em y 
-        self.speedy = random.randint(2, 7)                  #Velocidade em x  
+        self.speedx = random.choice(([-25,-15]))             # Velocidade em y 
+        self.speedy = 1 #random.randint(2, 7)                  #Velocidade em x  
 
     #ATUALIZANDO A POSIÇÃO DO METEORO: 
 
@@ -209,15 +244,13 @@ class Meteoros(pygame.sprite.Sprite):
          self.rect.centerx += self.speedx
          self.rect.y += self.speedy
          # Se o meteoro passar do final da tela, volta e sorteia novas posições e velocidades
-         if self.rect.top > HEIGHT or self.rect.right < 0 or self.rect.left > WIDTH:
-             self.rect.centerx = random.randint(0, WIDTH-meteoro_WIDTH)
-             #self.rect.y = random.randint(-100, -meteoro_HEIGHT)
-             self.bottom = meteoro_HEIGHT
-             self.rect.top = 0
-             self.speedx = random.randint(-3, -1)
-             self.speedy = random.randint(2, 7)       
-
-
+         if self.rect.top > HEIGHT or self.rect.right < 0: # or self.rect.left > WIDTH:
+            self.rect.centerx = WIDTH + meteoro_WIDTH #random.randint(0, WIDTH-meteoro_WIDTH)
+            #self.rect.y = random.randint(-100, -meteoro_HEIGHT)
+            self.bottom = random.randint(meteoro_HEIGHT, CHAO)                      #random.randint(0, HEIGHT-(500+meteoro_HEIGHT))    #HEIGHT -10    # Base = GRWOND (para ficar no chao)
+            self.rect.top = self.bottom-meteoro_HEIGHT    
+            self.speedx = random.choice([-25,-15,-10])
+            self.speedy = 1 
 
 #Cria grupo de Sprites 
 all_sprites = pygame.sprite.Group()
@@ -226,7 +259,7 @@ all_stars = pygame.sprite.Group()
 
 #Cria stars 
 # Adicionando mais estrelas:
-n_estrelas= 7
+n_estrelas= 5 #7
 
 for i in range(n_estrelas): 
     estrela = Stars(star_img_small,assets) 
@@ -235,7 +268,7 @@ for i in range(n_estrelas):
 
 #Cria Meteoros 
 # Adicionando mais meteoros: 
-n_meteoros = 5 
+n_meteoros =  3 #5 
 
 for i in range(n_meteoros): 
     meteoro = Meteoros(meteoro_img_small,assets) 
@@ -244,7 +277,11 @@ for i in range(n_meteoros):
 
 # Estados do JOGO 
 JOGANDO = 0
-ACABADO = 1
+ACABADO = 1 
+
+# Fases 
+Fase1 = "F1"
+Fase2 = "F2"
 
 #################################  LOOP PRINCIPAL    ###############################################################################
 
@@ -252,6 +289,9 @@ ACABADO = 1
 # window.blit(background_small, (0, 0))          # Plota cenário como background     
 
 def modo_jogo (window):
+
+    #Score inicial 
+    score = 0
 
     clock = pygame.time.Clock()
     
@@ -267,8 +307,13 @@ def modo_jogo (window):
     player = Player(player_img_small,assets)#assets[ANIMACAO_ASTRONA])
     all_sprites.add(player)
 
+    # Vidas 
+    vidas = 3 
+
     modo = JOGANDO
 
+    # Som de fundo 
+    assets[SOM_FUNDO].play(-1) 
 
     while modo!= ACABADO:
         clock.tick(FPS)                 # Velocidade do Jogo 
@@ -292,9 +337,13 @@ def modo_jogo (window):
                 # Dependendo da tecla, altera a velocidade.
                 if event.key == pygame.K_LEFT:
                     player.speedx -= 13
+                    player.indo_esquerda = True
+                    player.indo_direita = False 
                     #player.state = ANDANDO
 
                 if event.key == pygame.K_RIGHT:
+                    player.indo_direita = True 
+                    player.indo_esquerda = False 
                     player.speedx += 13
                     #player.state = ANDANDO
 
@@ -302,27 +351,49 @@ def modo_jogo (window):
                 # Dependendo da tecla, altera a velocidade.
                 if event.key == pygame.K_LEFT:
                     player.speedx += 13
+                    player.vira()
 
                 if event.key == pygame.K_RIGHT:
                     player.speedx -= 13
+                    player.vira()
             
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_g:
                     player.gravidade*=-1
         
         #COlisao 
-        if  pygame.sprite.spritecollide(player,all_stars,True):
-            estrela.kill()
-        if  pygame.sprite.spritecollide(player,all_meteoros,False):
-            player.kill()
-            # mortes +=1
-            # print(mortes)
-            # if mortes>(3*FPS): 
-            #     player.kill()
+        # Estrelas 
+        estrelas_tocadas = pygame.sprite.spritecollide(player,all_stars,True)  # lista de estrelas tocadas por player q saiem de all_stars
+        if len(estrelas_tocadas)>0: 
+            # Recria as estrelas
+            for estrela_tocada in estrelas_tocadas: 
+                nov_estrela = Stars(star_img_small,assets)   ############ criar nv estrela e por em grupos  E MSM COM METEORORS<----
+                all_sprites.add(nov_estrela)
+                all_stars.add(nov_estrela)
+                score+=10 # Muda pontuação 
+        # Meteoros 
+        meteroros_tocados = pygame.sprite.spritecollide(player,all_meteoros,True)
+        if len(meteroros_tocados)>0: 
+            vidas -=1 
+            # Recria meteoros 
+            for meteoro_tocado in meteroros_tocados: 
+                nov_meteoro = Meteoros(meteoro_img_small,assets)
+                all_sprites.add(nov_meteoro)
+                all_meteoros.add(nov_meteoro)
+
+            # Player com 3 vidas 
+            print(vidas)
+            if vidas>0:
+                all_sprites.add(player)
+
+            elif vidas<=0: 
+                player.kill()
+                modo = ACABADO
         
 
-
-
+            print(vidas)
+            print(score)
+            
         #####################################################################
         #  MOVER FUNDO            
         window.fill((0,0,0))                           # Pinta fundo de preto 
@@ -343,7 +414,13 @@ def modo_jogo (window):
         background_rect2.x += background_rect2.width
         window.blit(background, background_rect2)
 
-        # all_sprites.draw(window)
+        # all_sprites.draw(window) 
+
+        #Desenhando o placar 
+        text_surface = score_font.render(str(score), True, (255, 255, 0))
+        text_rect = text_surface.get_rect()
+        text_rect.midtop = (WIDTH / 2,  10)
+        window.blit(text_surface, text_rect)
         
         # Para cada loop:
         all_sprites.update(assets)                #Atualiza as ações de todos os sprites 
