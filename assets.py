@@ -19,7 +19,7 @@ def load_assets():
     assets = {} # Cria dicionário
 
     #assets[BACKGROUND_IMG] = pygame.image.load(path.join(IMG_DIR, 'fundo\\fundo_planeta_vermelho.png')).convert()
-    #assets[TELADEINICIO] = pygame.image.load(path.join(IMG_DIR, 'fundo\\tela_inicial.png')).convert()
+    assets[TELADEINICIO] = pygame.image.load(path.join(IMG_DIR, 'tela_inicial.png')).convert()
     assets[SOM_FUNDO] = pygame.mixer.Sound(path.join(SND_DIR, 'fundo_som_neon.mp3'))
     assets[FUNDO_F2] = pygame.image.load(path.join(IMG_DIR, 'fundo\\saturno_fundo.png')).convert()
     assets[SOM_STAR] = pygame.mixer.Sound(path.join(SND_DIR, 'som_sino.mp3')) 

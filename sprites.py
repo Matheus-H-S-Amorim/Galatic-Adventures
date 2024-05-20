@@ -1,5 +1,6 @@
 from condicoes import *
-
+import random
+from assets import *
 assets = load_assets()
 
 #Classe do Jogador 
@@ -137,55 +138,77 @@ class Meteoros(pygame.sprite.Sprite):
 
 #Classes das telas -> referência 1 do README
 #Classe das telas:
-class tela_inicial(pygame.sprite.Sprite):
-    def __init__(self):
-        self.texto_dy = 0
-        self.texto_vy = 20 #pixels/seg
+# class tela_inicial(pygame.sprite.Sprite):
+#     def __init__(self):
+#         self.texto_dy = 0
+#         self.texto_vy = 20 #pixels/seg
 
-    def atualiza(self, t):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return None
-            elif event.type == pygame.KEYDOWN:
-                return tela_jogo()
+#     def atualiza(self, t):
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT:
+#                 return None
+#             elif event.type == pygame.KEYDOWN:
+#                 return tela_jogo()
 
-        self.texto_dy += self.texto_vy * t
-        if abs(self.texto_dy) > 20:
-            self.texto_vy *= -1
-            sinal = self.texto_dy / abs(self.texto_dy)
-            self.texto_dy = sinal * 20 #manter no intervalo
-        return self
+#         self.texto_dy += self.texto_vy * t
+#         if abs(self.texto_dy) > 20:
+#             self.texto_vy *= -1
+#             sinal = self.texto_dy / abs(self.texto_dy)
+#             self.texto_dy = sinal * 20 #manter no intervalo
+#         return self
 
-class tela_jogo:
-    def __init__(self):
-        self.cor = (255, 0, 0) #decidir
-
-    def atualiza(self, dt):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return None 
-        return self
-
-class Game_over:
-    def __init__(self):
-        self.cor = (0, 0, 255)
-        # Coloque aqui outras inicializações da tela
-
-    def atualiza(self, dt):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return None 
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    return tela_inicial()
-                else:
-                    return None
-        return self
+# from os import *
+# IMG_DIR = path.join(path.dirname(__file__), 'assets', 'img')
+# def tela(window):
+#     clock = pygame.time.Clock()
+#     inicial = pygame.image.load(IMG_DIR, 'fundo\\tela_inicial.png').convert()
+#     fundoinit = pygame.transform.scale(inicial, (WIDTH,HEIGHT))
     
-    def desenha(self, window):
-        window.fill(self.cor)
-        mensagem(window, self, 'Game Over /n Clique "SPACE" para jogar novamente', (255, 255, 255))
-        window = pygame.display.set_mode((WIDTH, HEIGHT))
+#     modo = True
+
+#     while modo == True:
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT:
+#                 return None
+#             if event.type == pygame.KEYDOWN:
+#                 fase = '1'
+#                 modo = False
+
+#         window.fill(0,0,0)
+#         window.blit(fundoinit, (0, -50))
+#         pygame.display.update()
+#     return 1
+
+# class tela_jogo:
+#     def __init__(self):
+#         self.cor = (255, 0, 0) #decidir
+
+#     def atualiza(self, dt):
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT:
+#                 return None 
+#         return self
+
+# # class Game_over:
+# #     def __init__(self):
+# #         self.cor = (0, 0, 255)
+# #         # Coloque aqui outras inicializações da tela
+
+# #     def atualiza(self, dt):
+# #         for event in pygame.event.get():
+# #             if event.type == pygame.QUIT:
+# #                 return None 
+# #             elif event.type == pygame.KEYDOWN:
+# #                 if event.key == pygame.K_SPACE:
+# #                     return tela_inicial()
+# #                 else:
+# #                     return None
+# #         return self
+    
+# #     def desenha(self, window):
+# #         window.fill(self.cor)
+# #         mensagem(window, self, 'Game Over /n Clique "SPACE" para jogar novamente', (255, 255, 255))
+# #         window = pygame.display.set_mode((WIDTH, HEIGHT))
 
 # Adicionando mais estrelas:
 n_estrelas= 5
@@ -202,6 +225,6 @@ for i in range(n_meteoros):
     meteoro = Meteoros(meteoro_img_small,assets) 
     all_sprites.add(meteoro)  
     all_meteoros.add(meteoro)
-
-#iniciar assets:
-assets = load_assets()
+# from import *
+# #iniciar assets:
+# assets = load_assets()

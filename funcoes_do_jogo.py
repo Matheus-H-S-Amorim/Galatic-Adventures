@@ -1,5 +1,5 @@
 from sprites import *
-
+from assets import *
 def modo_jogo (window):
 
     clock = pygame.time.Clock()

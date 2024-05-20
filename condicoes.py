@@ -1,5 +1,10 @@
 import pygame.draw
-from assets import *
+
+ANIMACAO_ASTRONA = "animacao_astrona"
+BACKGROUND_IMG = 'fundo_planeta_vermelho.png'
+TELADEINICIO = 'tela_inicial'
+SOM_FUNDO = 'som_suspense.mp3'
+FUNDO_F2 = 'fundo_F2'
 
 #Tela do Jogo (largura e altura)
 WIDTH = 1300                                                   
@@ -57,11 +62,3 @@ meteoro_img_small= pygame.transform.scale(meteoro_img, (meteoro_WIDTH, meteoro_H
 all_sprites = pygame.sprite.Group()
 all_meteoros = pygame.sprite.Group()
 all_stars = pygame.sprite.Group()
-
-#Escreve na tela:
-def mensagem(window, conteudo, cor, delta_y=0):
-    img_texto = conteudo, True, cor
-    texto_x = int(window.get_width() / 2 - img_texto.get_width() / 2)
-    texto_y = int(window.get_height() / 2 - img_texto.get_height() / 2) + delta_y
-
-    window.blit(img_texto, (texto_x, texto_y))
