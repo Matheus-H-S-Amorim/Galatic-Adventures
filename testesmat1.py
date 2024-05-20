@@ -96,6 +96,7 @@ class Player(pygame.sprite.Sprite):
         self.images = assets[ANIMACAO_ASTRONA]  # Pega lista de frames 
         self.index = 0 
         self.image = self.images[self.index]  
+        self.mask = pygame.mask.from_surface(self.image) 
         
         self.rect = self.image.get_rect()           # Área de contato do Player 
         self.rect.centerx = WIDTH/8    #  WIDTH//2  # Centro 
@@ -202,6 +203,7 @@ class Stars(pygame.sprite.Sprite):
 
         self.state = PARADO 
         self.image = img  
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect() 
         self.rect.centerx = random.choice(self.area_nascer)
         self.bottom = random.randint(0,CHAO)                   # Base = GRWOND (para ficar no chao)
@@ -230,6 +232,7 @@ class Meteoros(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self) 
         #self.state = PARADO 
         self.image = img  
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect() 
         self.rect.centerx = WIDTH + meteoro_WIDTH  
         self.bottom = random.randint(meteoro_HEIGHT, CHAO)                      #random.randint(0, HEIGHT-(500+meteoro_HEIGHT))    #HEIGHT -10    # Base = GRWOND (para ficar no chao)
@@ -366,7 +369,7 @@ def modo_jogo (window):
         
         #COlisao 
         # Estrelas
-        estrelas_tocadas = pygame.sprite.spritecollide(player,all_stars,True)  # lista de estrelas tocadas por player q saiem de all_stars
+        estrelas_tocadas = pygame.sprite.spritecollide(player,all_stars,True,pygame.sprite.collide_mask)  # lista de estrelas tocadas por player q saiem de all_stars
         if len(estrelas_tocadas)>0: 
             
             # Recria as estrelas
@@ -379,7 +382,7 @@ def modo_jogo (window):
 
                 score+=10 # Muda pontuação 
         # Meteoros 
-        meteroros_tocados = pygame.sprite.spritecollide(player,all_meteoros,True)
+        meteroros_tocados = pygame.sprite.spritecollide(player,all_meteoros,True,pygame.sprite.collide_mask)
         if len(meteroros_tocados)>0: 
             vidas -=1 
             # Recria meteoros 
