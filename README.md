@@ -1,3 +1,19 @@
 # Pygame---Astronauta
 
-Estrutura inspirada na lógica presente em: https://github.com/Insper/pygame-snippets/blob/master/multiple_screens.py;
+<!-- Título: -->
+# Galact Adventure
+<!--         -->
+
+# Membros:
+Evilyn Araujo Vitoraci
+Taina Nascimento Barreto
+Matheus Henrique Silva Amorim
+
+# Funcionamento do Jogo:
+<!-- Primeiro Passo -->
+Após a abertura da janela e iniciação da tela de início, basta clicar em "SPACE" para que a primeira fase do jogo comece.
+
+<!-- Segundo Passo -->
+Quando a quantidade de pontos, mostrada no centro superior da janela atingir "150"
+
+
