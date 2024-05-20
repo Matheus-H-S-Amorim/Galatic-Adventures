@@ -308,22 +308,23 @@ def modo_jogo (window):
     all_sprites.add(player)
 
     # Vidas 
-    vidas = 15 
+    vidas = 3
 
     modo = JOGANDO
 
     # Som de fundo 
     assets[SOM_FUNDO].play(-1) 
+    assets[SOM_FUNDO].set_volume(0.3)
 
     while modo!= ACABADO:
-        if score>50: 
+        # Muda de fase 
+        if score>20: 
             background = assets[FUNDO_F2]
+            background = pygame.transform.scale(background, (WIDTH, HEIGHT))
         clock.tick(FPS)                 # Velocidade do Jogo 
 
-        # Gravidade
-        # GRAVIDADE = 0.7
 
-        # Processa todos os eventos que estão acontecendo (mouse, teclado, botão, etc).
+        # Lê o teclado 
         for event in pygame.event.get():
             # Se Fechou Jogo 
             if event.type == pygame.QUIT:
@@ -364,14 +365,18 @@ def modo_jogo (window):
                     player.gravidade*=-1
         
         #COlisao 
-        # Estrelas 
+        # Estrelas
         estrelas_tocadas = pygame.sprite.spritecollide(player,all_stars,True)  # lista de estrelas tocadas por player q saiem de all_stars
         if len(estrelas_tocadas)>0: 
+            
             # Recria as estrelas
             for estrela_tocada in estrelas_tocadas: 
                 nov_estrela = Stars(star_img_small,assets)   ############ criar nv estrela e por em grupos  E MSM COM METEORORS<----
                 all_sprites.add(nov_estrela)
                 all_stars.add(nov_estrela)
+                assets[SOM_STAR].play()
+                assets[SOM_STAR].set_volume(0.2)
+
                 score+=10 # Muda pontuação 
         # Meteoros 
         meteroros_tocados = pygame.sprite.spritecollide(player,all_meteoros,True)
@@ -382,6 +387,9 @@ def modo_jogo (window):
                 nov_meteoro = Meteoros(meteoro_img_small,assets)
                 all_sprites.add(nov_meteoro)
                 all_meteoros.add(nov_meteoro)
+                assets[SOM_METEORO].play()
+                assets[SOM_METEORO].set_volume(0.2)
+
 
             # Player com 3 vidas 
             print(vidas)
@@ -390,6 +398,9 @@ def modo_jogo (window):
 
             elif vidas<=0: 
                 player.kill()
+                assets[SOM_GAME_OVER].play()
+                assets[SOM_GAME_OVER].set_volume(1)
+                pygame.time.delay(1000)
                 modo = ACABADO
         
 
