@@ -6,21 +6,15 @@ def modo_jogo (window):
     
     assets = load_assets()
 
-    inicial = pygame.image.load(path.join(IMG_DIR, 'fundo\\tela_inicial.png')).convert()
-    inicial = pygame.transform.scale(inicial, (WIDTH, HEIGHT))
-
-    tela_inicio = tela_inicial(inicial,assets)
-    
-
-    #Cria player: 
-    player = Player(player_img_small,assets)
-    all_sprites.add(player)
-
     # Carrega o fundo do jogo:
     background = pygame.image.load(path.join(IMG_DIR, 'fundo\\fundo_planeta_vermelho.png')).convert()#assets[BACKGROUND_IMG]
     # Redimensiona o fundo:
     background = pygame.transform.scale(background, (WIDTH, HEIGHT))
     background_rect = background.get_rect()
+
+    #Cria player: 
+    player = Player(player_img_small,assets)
+    all_sprites.add(player)
 
     modo = JOGANDO
 
