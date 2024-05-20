@@ -62,8 +62,8 @@ ANDANDO = 3
 FPS = 30
 
 #Adicionando o placar: 
-score_font = pygame.font.Font(None, 50)  #Fonte de jogo 
-coracao = pygame.font.Font('assets/font/PressStart2P.ttf', 28)
+score_font = pygame.font.Font('assets/font/PressStart2P.ttf', 28)  #Fonte de jogo 
+
 
 # Inicia jogo 
 game = True 
@@ -436,7 +436,7 @@ def modo_jogo (window):
         window.blit(text_surface, text_rect) 
 
         # Desenhando as vidas
-        text_surface = coracao.render(chr(9829) * vidas, True, (255, 0, 0))
+        text_surface = score_font.render(chr(9829) * vidas, True, (255, 0, 0))
         text_rect = text_surface.get_rect()
         text_rect.bottomleft = (10, HEIGHT - 10)
         window.blit(text_surface, text_rect) 
