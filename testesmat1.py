@@ -44,7 +44,6 @@ star_img_small= pygame.transform.scale(star_img, (star_WIDTH, star_HEIGHT))
 meteoro_img = pygame.image.load('assets/img/Meteoro.png').convert_alpha()
 meteoro_img_small= pygame.transform.scale(meteoro_img, (meteoro_WIDTH, meteoro_HEIGHT))
 
-
 ################# CONFIGURACOES 
 # Gravidade
 # GRAVIDADE = 2                     #Gravidade comentada virou ATRIBUTO DO PLAYER
@@ -64,6 +63,7 @@ FPS = 30
 
 #Adicionando o placar: 
 score_font = pygame.font.Font(None, 50)  #Fonte de jogo 
+coracao = pygame.font.Font('assets/font/PressStart2P.ttf', 28)
 
 # Inicia jogo 
 game = True 
@@ -433,8 +433,14 @@ def modo_jogo (window):
         text_surface = score_font.render(str(score), True, (255, 255, 0))
         text_rect = text_surface.get_rect()
         text_rect.midtop = (WIDTH / 2,  10)
-        window.blit(text_surface, text_rect)
-        
+        window.blit(text_surface, text_rect) 
+
+        # Desenhando as vidas
+        text_surface = coracao.render(chr(9829) * vidas, True, (255, 0, 0))
+        text_rect = text_surface.get_rect()
+        text_rect.bottomleft = (10, HEIGHT - 10)
+        window.blit(text_surface, text_rect) 
+
         # Para cada loop:
         all_sprites.update(assets)                #Atualiza as ações de todos os sprites 
         all_sprites.draw(window)                  # Desenha todos os sprites 
