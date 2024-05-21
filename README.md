@@ -1,5 +1,3 @@
-# Galactic Adventures 
-
 <!-- Título: -->
 # Galact Adventure
 <!--         -->
