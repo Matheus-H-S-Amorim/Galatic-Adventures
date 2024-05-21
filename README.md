@@ -1,5 +1,5 @@
 <!-- Título: -->
-# Galact Adventure
+# Galactic Adventure
 <!--         -->
 
 # Membros:
