@@ -1,4 +1,4 @@
-# Pygame---Astronauta
+# Galactic Adventures 
 
 <!-- Título: -->
 # Galact Adventure
