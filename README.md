@@ -25,7 +25,7 @@ O jogador deve ter também atenção às suas vidas, pois, se perder todos os se
 Se o jogador quiser, ele pode clicar no botão "G" do teclado e, fazendo isso, a gravidade do jogo irá inverter e o jogador poderá andar no "teto" da tela, facilitando a captura de estrelas que estão no alto. 
 
 # Link da gravação do jogo funcionando: 
-
+https://youtu.be/x-hbQ658Oek
 
 # Instalando o Pygame: 
 No terminal do próprio VSCode é necessário escrever "pip.install.pygame".
@@ -39,7 +39,9 @@ Para importar as bibliotecas, basta ter escrito no "principal.py":
 # Referências dos efeitos sonoros: 
 site: Pixabay 
 
-# Referências das imagens: 
+# Referências das imagens:
+<!-- Imagens dos fundos e do astronauta--> 
+https://www.vectorstock.com/royalty-free-vector/set-space-background-vector-33325937
 
 <!-- Imagem final e inicial-->  
 Criadas na inteligência artificial Copilot.
@@ -50,11 +52,8 @@ site: Vecteezy
 <!-- Imagem do meteoro--> 
 site: Reddit 
 
-<!-- Imagens dos fundos--> 
-
-
-<!-- Imagens do astronauta--> 
-
+# EReferência para estruturas (mover o fundo, pulo do personagem, função do jogo)
+https://github.com/Insper/pygame-snippets
 
 # Referências da fonte das letras: 
 site: Google Fonts  
