@@ -333,9 +333,9 @@ def modo_jogo (window):
                 background = assets[FUNDO_F2]
                 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
                 if a==True: 
-                    meteoro = Meteoros(meteoro_img_small,assets) 
-                    all_sprites.add(meteoro)  
-                    all_meteoros.add(meteoro) 
+                    nov_meteoro = Meteoros(meteoro_img_small,assets) 
+                    all_sprites.add(nov_meteoro)  
+                    all_meteoros.add(nov_meteoro) 
                     a = False 
                     qtdMeteoros+=1
             
@@ -343,9 +343,9 @@ def modo_jogo (window):
                 background = assets[FUNDO_F3]
                 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
                 if b==True: 
-                    meteoro = Meteoros(meteoro_img_small,assets) 
-                    all_sprites.add(meteoro)  
-                    all_meteoros.add(meteoro) 
+                    nov_meteoro = Meteoros(meteoro_img_small,assets) 
+                    all_sprites.add(nov_meteoro)  
+                    all_meteoros.add(nov_meteoro) 
                     b = False 
                     qtdMeteoros+=1
 
@@ -354,9 +354,9 @@ def modo_jogo (window):
                 background = assets[FUNDO_F4]
                 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
                 if c==True: 
-                    meteoro = Meteoros(meteoro_img_small,assets) 
-                    all_sprites.add(meteoro)  
-                    all_meteoros.add(meteoro) 
+                    nov_meteoro = Meteoros(meteoro_img_small,assets) 
+                    all_sprites.add(nov_meteoro)  
+                    all_meteoros.add(nov_meteoro) 
                     c = False 
                     qtdMeteoros+=1
 
@@ -453,12 +453,12 @@ def modo_jogo (window):
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         modo = ACABADO
-                        for i in range (qtdMeteoros): 
-                            all_meteoros.remove(nov_meteoro)
-                            all_sprites.remove(nov_meteoro)
 
                     if event.type == pygame.KEYDOWN:
                             if event.key == pygame.K_SPACE:
+                                for i in range (qtdMeteoros): 
+                                    all_meteoros.remove(nov_meteoro)
+                                    all_sprites.remove(nov_meteoro)
                                 modo = RODANDO
 
                 window.blit(background, (0,0))
