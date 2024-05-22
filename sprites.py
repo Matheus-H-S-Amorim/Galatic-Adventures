@@ -5,6 +5,9 @@ assets = load_assets()
 
 #Classe do Jogador 
 class Player(pygame.sprite.Sprite):
+    '''
+    Personagem principal, astronauta
+    '''
     def __init__(self, img,assets):
 
         #classe mãe:   
