@@ -87,9 +87,7 @@ class Player(pygame.sprite.Sprite):
 
         self.images = assets[ANIMACAO_ASTRONA]      # Pega lista de frames 
         self.index = 0 
-        self.image = self.images[self.index] 
-        self.mask = pygame.mask.from_surface(self.image) 
- 
+        self.image = self.images[self.index]  
         
         self.rect = self.image.get_rect()           # Área de contato do Player 
         self.rect.centerx = WIDTH/8                 # Centro 
@@ -189,8 +187,6 @@ class Stars(pygame.sprite.Sprite):
 
         self.state = PARADO 
         self.image = img  
-        self.mask = pygame.mask.from_surface(self.image)
-
         self.rect = self.image.get_rect() 
         self.rect.centerx = random.choice(self.area_nascer)
         self.bottom = random.randint(0,CHAO)         
@@ -218,7 +214,6 @@ class Meteoros(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self) 
         #self.state = PARADO 
         self.image = img  
-        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect() 
         self.rect.centerx = WIDTH + meteoro_WIDTH  
         self.bottom = random.randint(meteoro_HEIGHT, CHAO) 
@@ -276,11 +271,14 @@ Fase2 = "F2"
 modo = TELA_INICIAL
 
 def modo_jogo (window):
+    # variaveis para frear criacao de novos meteoros 
+    a = True 
+    b = True 
+    c = True 
+
     modo = TELA_INICIAL
 
     while modo != ACABADO:
-
-        qtdMeteoros=0
         
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -324,25 +322,41 @@ def modo_jogo (window):
         assets[SOM_FUNDO].set_volume(0.3)
 
         while modo!= GAMEOVER and modo != RODANDO and modo != TELA_INICIAL and modo != ACABADO:
+            qtdMeteoros = 0 
+
             # Muda de fase 
-            if score>70: 
+            if score>=70 and score<130: 
                 background = assets[FUNDO_F2]
                 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
-                qtdMeteoros+=1
-
+                if a==True: 
+                    meteoro = Meteoros(meteoro_img_small,assets) 
+                    all_sprites.add(meteoro)  
+                    all_meteoros.add(meteoro) 
+                    a = False 
+                    qtdMeteoros+=1
             
-            if score>130: 
+            if score>=130 and score<200: 
                 background = assets[FUNDO_F3]
                 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
-                qtdMeteoros+=1
+                if b==True: 
+                    meteoro = Meteoros(meteoro_img_small,assets) 
+                    all_sprites.add(meteoro)  
+                    all_meteoros.add(meteoro) 
+                    b = False 
+                    qtdMeteoros+=1
 
-            
+
             if score>200: 
                 background = assets[FUNDO_F4]
                 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
-                qtdMeteoros+=1
+                if c==True: 
+                    meteoro = Meteoros(meteoro_img_small,assets) 
+                    all_sprites.add(meteoro)  
+                    all_meteoros.add(meteoro) 
+                    c = False 
+                    qtdMeteoros+=1
 
-            
+
             clock.tick(FPS)                 # Velocidade do Jogo
 
             # Lê o teclado 
@@ -385,7 +399,7 @@ def modo_jogo (window):
             
             #COlisao 
             # Estrelas
-            estrelas_tocadas = pygame.sprite.spritecollide(player,all_stars,True,pygame.sprite.collide_mask)  # lista de estrelas tocadas por player q saiem de all_stars
+            estrelas_tocadas = pygame.sprite.spritecollide(player,all_stars,True) 
             if len(estrelas_tocadas)>0: 
                 
                 # Recria as estrelas
@@ -399,7 +413,7 @@ def modo_jogo (window):
                     score+=10 # Muda pontuação 
 
             # Meteoros 
-            meteroros_tocados = pygame.sprite.spritecollide(player,all_meteoros,True,pygame.sprite.collide_mask)
+            meteroros_tocados = pygame.sprite.spritecollide(player,all_meteoros,True)
             if len(meteroros_tocados)>0: 
                 vidas -=1 
 
@@ -434,13 +448,14 @@ def modo_jogo (window):
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         modo = ACABADO
-                        for i in range (qtdMeteoros): 
-                            all_meteoros.remove(nov_meteoro)
-                            all_sprites.remove(nov_meteoro)
 
                     if event.type == pygame.KEYDOWN:
                             if event.key == pygame.K_SPACE:
                                 modo = RODANDO
+                                for i in range (qtdMeteoros): 
+                                    all_meteoros.remove(nov_meteoro)
+                                    all_sprites.remove(nov_meteoro)
+
 
                 window.blit(background, (0,0))
                 pygame.display.update()
