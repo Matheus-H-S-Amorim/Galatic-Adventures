@@ -279,8 +279,10 @@ for i in range(n_meteoros):
     all_meteoros.add(meteoro) 
 
 # Estados do JOGO 
-JOGANDO = 0
-ACABADO = 1 
+TELA_INICIAL = 0
+JOGANDO = 1
+ACABADO = 3 
+TELA_FINAL = 2
 
 # Fases 
 Fase1 = "F1"
@@ -292,6 +294,7 @@ Fase2 = "F2"
 # window.blit(background_small, (0, 0))          # Plota cenário como background     
 
 def modo_jogo (window):
+    modo = TELA_INICIAL
 
     #Score inicial 
     score = 0
@@ -299,6 +302,21 @@ def modo_jogo (window):
     clock = pygame.time.Clock()
     
     assets = load_assets()
+    
+    while modo != JOGANDO and modo != ACABADO:
+
+        background = assets[TELADEINICIO]
+        background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                modo = ACABADO
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
+                    modo = JOGANDO
+        window.blit(background, (0,0))
+        pygame.display.update()
 
     # Carrega o fundo do jogo
     background = pygame.image.load(path.join(IMG_DIR, 'fundo\\fundo_planeta_vermelho.png')).convert()#assets[BACKGROUND_IMG]
@@ -449,6 +467,20 @@ def modo_jogo (window):
         all_sprites.draw(window)                  # Desenha todos os sprites 
         pygame.display.update()                   # Mostra novo frame com altereações # Dá para usar pygame.display.flip() também  
         # pygame.display.flip()
+
+        while modo==TELA_FINAL: 
+            background = assets[TELAFINAL]
+            background = pygame.transform.scale(background, (WIDTH, HEIGHT)) 
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    modo = ACABADO
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
+                        modo = TELA_INICIAL 
+            window.blit(background, (0,0))
+            pygame.display.update()
 
         #####################################################################
     
