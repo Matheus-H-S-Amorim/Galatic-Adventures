@@ -258,7 +258,7 @@ TELA_INICIAL = 0
 JOGANDO = 1
 ACABADO = 3 
 GAMEOVER = 4
-
+RODANDO = 5
 # Fases 
 Fase1 = "F1"
 Fase2 = "F2"
@@ -270,134 +270,22 @@ modo = TELA_INICIAL
 def modo_jogo (window):
     modo = TELA_INICIAL
 
-    score = 0
-
-    clock = pygame.time.Clock()
-    
-    assets = load_assets()
-
-    while modo != JOGANDO and modo != ACABADO and modo != GAMEOVER:
-
-        background = assets[TELADEINICIO]
-        background = pygame.transform.scale(background, (WIDTH, HEIGHT))
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                modo = ACABADO
-
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
-                    modo = JOGANDO
-        window.blit(background, (0,0))
-        pygame.display.update()
-
-    background = pygame.image.load(path.join(IMG_DIR, 'fundo\\fundo_planeta_vermelho.png')).convert()
-    background = pygame.transform.scale(background, (WIDTH, HEIGHT))
-    background_rect = background.get_rect()
-
-    #Cria player  
-    player = Player(player_img_small,assets)
-    all_sprites.add(player)
-
-    # Vidas 
-    vidas = 3
-
-    # Som de fundo 
-    assets[SOM_FUNDO].play(-1) 
-    assets[SOM_FUNDO].set_volume(0.3)
-
-    while modo!= ACABADO or modo!= GAMEOVER or modo != TELA_INICIAL:
-        #Tela inicial:
-        # Muda de fase 
-        if score>20: 
-            background = assets[FUNDO_F2]
-            background = pygame.transform.scale(background, (WIDTH, HEIGHT))
-        clock.tick(FPS)                 # Velocidade do Jogo
-
-        # Lê o teclado 
-        for event in pygame.event.get():
-            # Se Fechou Jogo 
-            if event.type == pygame.QUIT:
-                modo = ACABADO
-
-            # Se Apertou Tecla 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
-                    player.jump()
-
-            ##########  MOVIMENTAÇÃO OPCIONAL NO EIXO X ########################
-            if event.type == pygame.KEYDOWN:
-                # Dependendo da tecla, altera a velocidade.
-                if event.key == pygame.K_LEFT:
-                    player.speedx -= 13
-                    player.indo_esquerda = True
-                    player.indo_direita = False 
-
-                if event.key == pygame.K_RIGHT:
-                    player.indo_direita = True 
-                    player.indo_esquerda = False 
-                    player.speedx += 13
-
-            if event.type == pygame.KEYUP:
-                # Dependendo da tecla, altera a velocidade.
-                if event.key == pygame.K_LEFT:
-                    player.speedx += 13
-                    player.vira()
-
-                if event.key == pygame.K_RIGHT:
-                    player.speedx -= 13
-                    player.vira()
-            
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_g:
-                    player.gravidade*=-1
+    while modo != ACABADO:
         
-        #COlisao 
-        # Estrelas
-        estrelas_tocadas = pygame.sprite.spritecollide(player,all_stars,True) 
-        if len(estrelas_tocadas)>0: 
-            
-            # Recria as estrelas
-            for estrela_tocada in estrelas_tocadas: 
-                nov_estrela = Stars(star_img_small,assets)
-                all_sprites.add(nov_estrela)
-                all_stars.add(nov_estrela)
-                assets[SOM_STAR].play()
-                assets[SOM_STAR].set_volume(0.2)
+        for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    modo = ACABADO
 
-                score+=10 # Muda pontuação 
+        modo = TELA_INICIAL
+        score = 0
 
-        # Meteoros 
-        meteroros_tocados = pygame.sprite.spritecollide(player,all_meteoros,True)
-        if len(meteroros_tocados)>0: 
-            vidas -=1 
-
-            # Recria meteoros 
-            for meteoro_tocado in meteroros_tocados: 
-                nov_meteoro = Meteoros(meteoro_img_small,assets)
-                all_sprites.add(nov_meteoro)
-                all_meteoros.add(nov_meteoro)
-                assets[SOM_METEORO].play()
-                assets[SOM_METEORO].set_volume(0.2)
-
-            # Player com 3 vidas 
-            print(vidas)
-            if vidas>0:
-                all_sprites.add(player)
-
-            elif vidas<=0: 
-                player.kill()
-                assets[SOM_GAME_OVER].play()
-                assets[SOM_GAME_OVER].set_volume(1)
-                pygame.time.delay(1000)
-                modo = GAMEOVER
+        clock = pygame.time.Clock()
         
+        assets = load_assets()
 
-            print(vidas)
-            print(score)
-        while modo == GAMEOVER:
+        while modo != JOGANDO and modo != GAMEOVER and modo != RODANDO and modo != ACABADO:
 
-            background = assets[TELAFINAL]
+            background = assets[TELADEINICIO]
             background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 
             for event in pygame.event.get():
@@ -406,37 +294,158 @@ def modo_jogo (window):
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
-                        modo = TELADEINICIO
+                        modo = JOGANDO
             window.blit(background, (0,0))
             pygame.display.update()
-   
-        #####################################################################
-        #  MOVER FUNDO            
-        window.fill((0,0,0))    
 
-        # Atualiza a posição da imagem de fundo.
-        background_rect.x += world_speed
+        background = pygame.image.load(path.join(IMG_DIR, 'fundo\\fundo_planeta_vermelho.png')).convert()
+        background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+        background_rect = background.get_rect()
 
-        # Se o fundo saiu da janela, faz ele voltar para dentro.
-        if background_rect.right < 0:
-            background_rect.x += background_rect.width
-        window.blit(background, background_rect)
+        #Cria player  
+        player = Player(player_img_small,assets)
+        all_sprites.add(player)
 
-        # Desenhamos a imagem novamente, mas deslocada da largura da imagem em x.
-        background_rect2 = background_rect.copy()
-        background_rect2.x += background_rect2.width
-        window.blit(background, background_rect2)
+        # Vidas 
+        vidas = 3
 
-        #Desenhando o placar 
-        text_surface = score_font.render(str(score), True, (255, 255, 0))
-        text_rect = text_surface.get_rect()
-        text_rect.midtop = (WIDTH / 2,  10)
-        window.blit(text_surface, text_rect)
-        
-        # Para cada loop:
-        all_sprites.update(assets)  
-        all_sprites.draw(window)                  
-        pygame.display.update()                     
+        # Som de fundo 
+        assets[SOM_FUNDO].play(-1) 
+        assets[SOM_FUNDO].set_volume(0.3)
+
+        while modo!= GAMEOVER and modo != RODANDO and modo != TELA_INICIAL and modo != ACABADO:
+            #Tela inicial:
+            # Muda de fase 
+            if score>20: 
+                background = assets[FUNDO_F2]
+                background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+            clock.tick(FPS)                 # Velocidade do Jogo
+
+            # Lê o teclado 
+            for event in pygame.event.get():
+                # Se Fechou Jogo 
+                if event.type == pygame.QUIT:
+                    modo = ACABADO
+
+                # Se Apertou Tecla 
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
+                        player.jump()
+
+                ##########  MOVIMENTAÇÃO OPCIONAL NO EIXO X ########################
+                if event.type == pygame.KEYDOWN:
+                    # Dependendo da tecla, altera a velocidade.
+                    if event.key == pygame.K_LEFT:
+                        player.speedx -= 13
+                        player.indo_esquerda = True
+                        player.indo_direita = False 
+
+                    if event.key == pygame.K_RIGHT:
+                        player.indo_direita = True 
+                        player.indo_esquerda = False 
+                        player.speedx += 13
+
+                if event.type == pygame.KEYUP:
+                    # Dependendo da tecla, altera a velocidade.
+                    if event.key == pygame.K_LEFT:
+                        player.speedx += 13
+                        player.vira()
+
+                    if event.key == pygame.K_RIGHT:
+                        player.speedx -= 13
+                        player.vira()
+                
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_g:
+                        player.gravidade*=-1
+            
+            #COlisao 
+            # Estrelas
+            estrelas_tocadas = pygame.sprite.spritecollide(player,all_stars,True) 
+            if len(estrelas_tocadas)>0: 
+                
+                # Recria as estrelas
+                for estrela_tocada in estrelas_tocadas: 
+                    nov_estrela = Stars(star_img_small,assets)
+                    all_sprites.add(nov_estrela)
+                    all_stars.add(nov_estrela)
+                    assets[SOM_STAR].play()
+                    assets[SOM_STAR].set_volume(0.2)
+
+                    score+=10 # Muda pontuação 
+
+            # Meteoros 
+            meteroros_tocados = pygame.sprite.spritecollide(player,all_meteoros,True)
+            if len(meteroros_tocados)>0: 
+                vidas -=1 
+
+                # Recria meteoros 
+                for meteoro_tocado in meteroros_tocados: 
+                    nov_meteoro = Meteoros(meteoro_img_small,assets)
+                    all_sprites.add(nov_meteoro)
+                    all_meteoros.add(nov_meteoro)
+                    assets[SOM_METEORO].play()
+                    assets[SOM_METEORO].set_volume(0.2)
+
+                # Player com 3 vidas 
+                print(vidas)
+                if vidas>0:
+                    all_sprites.add(player)
+
+                elif vidas<=0: 
+                    player.kill()
+                    assets[SOM_GAME_OVER].play()
+                    assets[SOM_GAME_OVER].set_volume(1)
+                    pygame.time.delay(1000)
+                    modo = GAMEOVER
+            
+                print(vidas)
+                print(score)
+                
+            while modo != TELA_INICIAL and modo != JOGANDO and modo != RODANDO and modo != ACABADO:
+
+                background = assets[TELAFINAL]
+                background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        modo = ACABADO
+
+                    if event.type == pygame.KEYDOWN:
+                            if event.key == pygame.K_SPACE:
+                                modo = RODANDO
+
+                window.blit(background, (0,0))
+                pygame.display.update()
+
+            #####################################################################
+            #  MOVER FUNDO            
+            window.fill((0,0,0))    
+
+            # Atualiza a posição da imagem de fundo.
+            background_rect.x += world_speed
+
+            # Se o fundo saiu da janela, faz ele voltar para dentro.
+            if background_rect.right < 0:
+                background_rect.x += background_rect.width
+            window.blit(background, background_rect)
+
+            # Desenhamos a imagem novamente, mas deslocada da largura da imagem em x.
+            background_rect2 = background_rect.copy()
+            background_rect2.x += background_rect2.width
+            window.blit(background, background_rect2)
+
+            #Desenhando o placar 
+            text_surface = score_font.render(str(score), True, (255, 255, 0))
+            text_rect = text_surface.get_rect()
+            text_rect.midtop = (WIDTH / 2,  10)
+            window.blit(text_surface, text_rect)
+            
+            # Para cada loop:
+            all_sprites.update(assets)  
+            all_sprites.draw(window)                  
+            pygame.display.update()
+                            
 
 # Inicialização do Pygame.
 pygame.init()
