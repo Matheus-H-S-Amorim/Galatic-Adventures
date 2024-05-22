@@ -60,8 +60,11 @@ ANDANDO = 3
 # Controlador de velocidade do jogo 
 FPS = 30
 
-#Adicionando o placar: 
-score_font = pygame.font.Font(None, 50)
+# #Adicionando o placar: 
+# score_font = pygame.font.Font(None, 50)
+# #Adicionando o placar: 
+score_font = pygame.font.Font('assets/font/PressStart2P.ttf', 28)  #Fonte de jogo 
+
 
 # Inicia jogo 
 game = True 
@@ -256,28 +259,41 @@ for i in range(n_meteoros):
 # Estados do JOGO 
 TELA_INICIAL = 0
 JOGANDO = 1
-TELA_FINAL = 2 
-ACABADO = 3
-
+ACABADO = 3 
+GAMEOVER = 4
+RODANDO = 5
 # Fases 
 Fase1 = "F1"
 Fase2 = "F2"
 
-modo = TELA_INICIAL
 #################################  LOOP PRINCIPAL    ###############################################################################
-Loop = True  
-while Loop == True and modo!=ACABADO: 
-    def modo_jogo (window):
-        modo=TELA_INICIAL
-        #Score inicial 
+
+modo = TELA_INICIAL
+
+def modo_jogo (window):
+    # variaveis para frear criacao de novos meteoros 
+    a = True 
+    b = True 
+    c = True 
+
+    modo = TELA_INICIAL
+
+    while modo != ACABADO:
+        
+        for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    modo = ACABADO
+
+        modo = TELA_INICIAL
         score = 0
 
         clock = pygame.time.Clock()
         
         assets = load_assets()
 
-        # Tela Inicial 
-        while modo == TELA_INICIAL:
+        while modo != JOGANDO and modo != GAMEOVER and modo != RODANDO and modo != ACABADO:
+            # Vidas 
+            vidas = 3
 
             background = assets[TELADEINICIO]
             background = pygame.transform.scale(background, (WIDTH, HEIGHT))
@@ -292,25 +308,48 @@ while Loop == True and modo!=ACABADO:
             window.blit(background, (0,0))
             pygame.display.update()
 
-        background = pygame.image.load(path.join(IMG_DIR, 'fundo//fundo_planeta_vermelho.png')).convert()
+        background = pygame.image.load(path.join(IMG_DIR, 'fundo\\fundo_planeta_vermelho.png')).convert()
         background = pygame.transform.scale(background, (WIDTH, HEIGHT))
         background_rect = background.get_rect()
+
         #Cria player  
         player = Player(player_img_small,assets)
         all_sprites.add(player)
 
-        # Vidas 
-        vidas = 3
 
         # Som de fundo 
         assets[SOM_FUNDO].play(-1) 
         assets[SOM_FUNDO].set_volume(0.3)
 
-        while modo!= ACABADO:
+        while modo!= GAMEOVER and modo != RODANDO and modo != TELA_INICIAL and modo != ACABADO:
             # Muda de fase 
-            if score>20: 
+            if score>=70 and score<130: 
                 background = assets[FUNDO_F2]
                 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+                if a==True: 
+                    meteoro = Meteoros(meteoro_img_small,assets) 
+                    all_sprites.add(meteoro)  
+                    all_meteoros.add(meteoro) 
+                    a = False 
+            
+            if score>=130 and score<200: 
+                background = assets[FUNDO_F3]
+                background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+                if b==True: 
+                    meteoro = Meteoros(meteoro_img_small,assets) 
+                    all_sprites.add(meteoro)  
+                    all_meteoros.add(meteoro) 
+                    b = False 
+
+            if score>200: 
+                background = assets[FUNDO_F4]
+                background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+                if c==True: 
+                    meteoro = Meteoros(meteoro_img_small,assets) 
+                    all_sprites.add(meteoro)  
+                    all_meteoros.add(meteoro) 
+                    c = False 
+
             clock.tick(FPS)                 # Velocidade do Jogo
 
             # Lê o teclado 
@@ -389,68 +428,74 @@ while Loop == True and modo!=ACABADO:
                     assets[SOM_GAME_OVER].play()
                     assets[SOM_GAME_OVER].set_volume(1)
                     pygame.time.delay(1000)
-                    modo = TELA_FINAL
-            print(vidas)
-            print(score)
+                    modo = GAMEOVER
             
-            
-        while modo==TELA_FINAL: 
-            background = assets[TELAFINAL]
-            background = pygame.transform.scale(background, (WIDTH, HEIGHT))
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    modo = ACABADO
-
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
-                        modo = JOGANDO 
-            window.blit(background, (0,0))
-            pygame.display.update()
-
-
-            
+                print(vidas)
+                print(score)
                 
-        #####################################################################
-        #  MOVER FUNDO            
-        window.fill((0,0,0))    
+            while modo != TELA_INICIAL and modo != JOGANDO and modo != RODANDO and modo != ACABADO:
 
-        # Atualiza a posição da imagem de fundo.
-        background_rect.x += world_speed
+                background = assets[TELAFINAL]
+                background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 
-        # Se o fundo saiu da janela, faz ele voltar para dentro.
-        if background_rect.right < 0:
-            background_rect.x += background_rect.width
-        window.blit(background, background_rect)
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        modo = ACABADO
 
-        # Desenhamos a imagem novamente, mas deslocada da largura da imagem em x.
-        background_rect2 = background_rect.copy()
-        background_rect2.x += background_rect2.width
-        window.blit(background, background_rect2)
+                    if event.type == pygame.KEYDOWN:
+                            if event.key == pygame.K_SPACE:
+                                modo = RODANDO
 
-        #Desenhando o placar 
-        text_surface = score_font.render(str(score), True, (255, 255, 0))
-        text_rect = text_surface.get_rect()
-        text_rect.midtop = (WIDTH / 2,  10)
-        window.blit(text_surface, text_rect)
-        
-        # Para cada loop:
-        all_sprites.update(assets)  
-        all_sprites.draw(window)                  
-        pygame.display.update()                    
+                window.blit(background, (0,0))
+                pygame.display.update()
 
-    # Inicialização do Pygame.
-    pygame.init()
-    pygame.mixer.init()
+            #####################################################################
+            #  MOVER FUNDO            
+            window.fill((0,0,0))    
 
-    # Tamanho da tela.
-    window = pygame.display.set_mode((WIDTH, HEIGHT))
+            # Atualiza a posição da imagem de fundo.
+            background_rect.x += world_speed
 
-    # Nome do jogo
-    # pygame.display.set_caption(TITULO)
+            # Se o fundo saiu da janela, faz ele voltar para dentro.
+            if background_rect.right < 0:
+                background_rect.x += background_rect.width
+            window.blit(background, background_rect)
 
-    # Comando para evitar travamentos.
-    try:
-        modo_jogo(window)
-    finally:
-        pygame.quit()
+            # Desenhamos a imagem novamente, mas deslocada da largura da imagem em x.
+            background_rect2 = background_rect.copy()
+            background_rect2.x += background_rect2.width
+            window.blit(background, background_rect2)
+
+            #Desenhando o placar 
+            text_surface = score_font.render(str(score), True, (255, 255, 0))
+            text_rect = text_surface.get_rect()
+            text_rect.midtop = (WIDTH / 2,  10)
+            window.blit(text_surface, text_rect)
+
+            # Desenhando as vidas
+            text_surface = score_font.render(chr(9829) * vidas, True, (255, 0, 0))
+            text_rect = text_surface.get_rect()
+            text_rect.bottomleft = (10, HEIGHT - 10)
+            window.blit(text_surface, text_rect) 
+            
+            # Para cada loop:
+            all_sprites.update(assets)  
+            all_sprites.draw(window)                  
+            pygame.display.update()
+                            
+
+# Inicialização do Pygame.
+pygame.init()
+pygame.mixer.init()
+
+# Tamanho da tela.
+window = pygame.display.set_mode((WIDTH, HEIGHT))
+
+# Nome do jogo
+# pygame.display.set_caption(TITULO)
+
+# Comando para evitar travamentos.
+try:
+    modo_jogo(window)
+finally:
+    pygame.quit()
