@@ -318,15 +318,15 @@ def modo_jogo (window):
 
         while modo!= GAMEOVER and modo != RODANDO and modo != TELA_INICIAL and modo != ACABADO:
             # Muda de fase 
-            if score>20: 
+            if score>50: 
                 background = assets[FUNDO_F2]
                 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
             
-            if score>40: 
+            if score>110: 
                 background = assets[FUNDO_F3]
                 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
             
-            if score>60: 
+            if score>180: 
                 background = assets[FUNDO_F4]
                 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
             
