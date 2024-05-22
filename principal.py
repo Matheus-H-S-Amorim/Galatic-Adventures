@@ -60,8 +60,11 @@ ANDANDO = 3
 # Controlador de velocidade do jogo 
 FPS = 30
 
-#Adicionando o placar: 
-score_font = pygame.font.Font(None, 50)
+# #Adicionando o placar: 
+# score_font = pygame.font.Font(None, 50)
+# #Adicionando o placar: 
+score_font = pygame.font.Font('assets/font/PressStart2P.ttf', 28)  #Fonte de jogo 
+
 
 # Inicia jogo 
 game = True 
@@ -284,6 +287,8 @@ def modo_jogo (window):
         assets = load_assets()
 
         while modo != JOGANDO and modo != GAMEOVER and modo != RODANDO and modo != ACABADO:
+            # Vidas 
+            vidas = 3
 
             background = assets[TELADEINICIO]
             background = pygame.transform.scale(background, (WIDTH, HEIGHT))
@@ -306,19 +311,25 @@ def modo_jogo (window):
         player = Player(player_img_small,assets)
         all_sprites.add(player)
 
-        # Vidas 
-        vidas = 3
 
         # Som de fundo 
         assets[SOM_FUNDO].play(-1) 
         assets[SOM_FUNDO].set_volume(0.3)
 
         while modo!= GAMEOVER and modo != RODANDO and modo != TELA_INICIAL and modo != ACABADO:
-            #Tela inicial:
             # Muda de fase 
-            if score>60: 
+            if score>20: 
                 background = assets[FUNDO_F2]
                 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+            
+            if score>40: 
+                background = assets[FUNDO_F3]
+                background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+            
+            if score>60: 
+                background = assets[FUNDO_F4]
+                background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+            
             clock.tick(FPS)                 # Velocidade do Jogo
 
             # Lê o teclado 
@@ -440,6 +451,12 @@ def modo_jogo (window):
             text_rect = text_surface.get_rect()
             text_rect.midtop = (WIDTH / 2,  10)
             window.blit(text_surface, text_rect)
+
+            # Desenhando as vidas
+            text_surface = score_font.render(chr(9829) * vidas, True, (255, 0, 0))
+            text_rect = text_surface.get_rect()
+            text_rect.bottomleft = (10, HEIGHT - 10)
+            window.blit(text_surface, text_rect) 
             
             # Para cada loop:
             all_sprites.update(assets)  
