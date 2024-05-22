@@ -479,6 +479,7 @@ def modo_jogo (window):
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
                         modo = TELA_INICIAL 
+                        
             window.blit(background, (0,0))
             pygame.display.update()
 

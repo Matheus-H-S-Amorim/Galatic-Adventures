@@ -322,6 +322,8 @@ def modo_jogo (window):
         assets[SOM_FUNDO].set_volume(0.3)
 
         while modo!= GAMEOVER and modo != RODANDO and modo != TELA_INICIAL and modo != ACABADO:
+            qtdMeteoros = 0 
+
             # Muda de fase 
             if score>=70 and score<130: 
                 background = assets[FUNDO_F2]
@@ -331,6 +333,7 @@ def modo_jogo (window):
                     all_sprites.add(meteoro)  
                     all_meteoros.add(meteoro) 
                     a = False 
+                    qtdMeteoros+=1
             
             if score>=130 and score<200: 
                 background = assets[FUNDO_F3]
@@ -340,6 +343,8 @@ def modo_jogo (window):
                     all_sprites.add(meteoro)  
                     all_meteoros.add(meteoro) 
                     b = False 
+                    qtdMeteoros+=1
+
 
             if score>200: 
                 background = assets[FUNDO_F4]
@@ -349,6 +354,8 @@ def modo_jogo (window):
                     all_sprites.add(meteoro)  
                     all_meteoros.add(meteoro) 
                     c = False 
+                    qtdMeteoros+=1
+
 
             clock.tick(FPS)                 # Velocidade do Jogo
 
@@ -445,6 +452,10 @@ def modo_jogo (window):
                     if event.type == pygame.KEYDOWN:
                             if event.key == pygame.K_SPACE:
                                 modo = RODANDO
+                                for i in range (qtdMeteoros): 
+                                    all_meteoros.remove(nov_meteoro)
+                                    all_sprites.remove(nov_meteoro)
+
 
                 window.blit(background, (0,0))
                 pygame.display.update()

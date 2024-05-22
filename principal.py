@@ -279,6 +279,8 @@ def modo_jogo (window):
     modo = TELA_INICIAL
 
     while modo != ACABADO:
+
+        qtdMeteoros=0
         
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -323,17 +325,23 @@ def modo_jogo (window):
 
         while modo!= GAMEOVER and modo != RODANDO and modo != TELA_INICIAL and modo != ACABADO:
             # Muda de fase 
-            if score>50: 
+            if score>70: 
                 background = assets[FUNDO_F2]
                 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+                qtdMeteoros+=1
+
             
-            if score>110: 
+            if score>130: 
                 background = assets[FUNDO_F3]
                 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+                qtdMeteoros+=1
+
             
-            if score>180: 
+            if score>200: 
                 background = assets[FUNDO_F4]
                 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+                qtdMeteoros+=1
+
             
             clock.tick(FPS)                 # Velocidade do Jogo
 
@@ -426,6 +434,9 @@ def modo_jogo (window):
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         modo = ACABADO
+                        for i in range (qtdMeteoros): 
+                            all_meteoros.remove(nov_meteoro)
+                            all_sprites.remove(nov_meteoro)
 
                     if event.type == pygame.KEYDOWN:
                             if event.key == pygame.K_SPACE:
