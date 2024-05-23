@@ -5,11 +5,9 @@ import pygame
 import pygame.draw    
 pygame.init()
 import random
-import assets 
-from assets import load_assets,ANIMACAO_ASTRONA
-
-# import assets 
 from assets import *
+from assets import load_assets,ANIMACAO_ASTRONA
+import assets 
 from config import *
 from os import * 
 import numpy as np 
@@ -20,10 +18,13 @@ HEIGHT = 650                                                  # Altura
 window = pygame.display.set_mode((WIDTH, HEIGHT))             # Cria Janela com Largura e Altura 
 pygame.display.set_caption('Jogo do Astronauta!')             # Título da Janela 
 
+# Velocidade da tela de fundo 
 world_speed = -10
 
 #Inicia assests
 assets = load_assets() 
+
+# Tamanho do player, do meteoro e da estrela 
 player_WIDTH= 100
 player_HEIGHT = 100
 meteoro_WIDTH = 80         
@@ -31,46 +32,37 @@ meteoro_HEIGHT = 80
 star_WIDTH = 50
 star_HEIGHT = 50 
 
-# Cenario
-# background = pygame.image.load('assets/img/fundo/fundo_planeta_vermelho.png').convert()
-# background_small= pygame.transform.scale(background, (WIDTH,HEIGHT))
-# Personagem 
+# Imagem do Player  
 player_img = pygame.image.load('assets/img/astronauta_anda/tile0.png').convert_alpha()
 player_img_small= pygame.transform.scale(player_img, (player_WIDTH, player_HEIGHT))
-# Strela 
+# Imagem da Estrela 
 star_img = pygame.image.load('assets/img/estrela.webp').convert_alpha()
 star_img_small= pygame.transform.scale(star_img, (star_WIDTH, star_HEIGHT))
-# Meteoro 
+# Imagem do Meteoro 
 meteoro_img = pygame.image.load('assets/img/Meteoro.png').convert_alpha()
 meteoro_img_small= pygame.transform.scale(meteoro_img, (meteoro_WIDTH, meteoro_HEIGHT))
 
 
 ################################################## CONFIGURAÇÕES #######################################################################
 
+# Tamanho do pulo 
 TAM_PULO = 14
-# Atura do chão
+#Altura do chão 
 CHAO = HEIGHT - 70
-
 # POSSIVEIS ESTADOS DO PLAYER
-PARADO = 0                     # Parado 
-PULANDO = 1                    # Pulando 
-CAINDO = 2                     # Caindo 
+PARADO = 0                      
+PULANDO = 1                    
+CAINDO = 2                      
 ANDANDO = 3 
 
 # Controlador de velocidade do jogo 
 FPS = 30
 
 # #Adicionando o placar: 
-# score_font = pygame.font.Font(None, 50)
-# #Adicionando o placar: 
 score_font = pygame.font.Font('assets/font/PressStart2P.ttf', 28)  #Fonte de jogo 
 
 
-# Inicia jogo 
-game = True 
-
 ################################################## CLASSES #######################################################################
-
 
 #Classe do Jogador 
 class Player(pygame.sprite.Sprite):
@@ -84,25 +76,24 @@ class Player(pygame.sprite.Sprite):
         # Animar player 
         self.indo_direita = False 
         self.indo_esquerda = False  
-
-        self.images = assets[ANIMACAO_ASTRONA]      # Pega lista de frames 
+        self.images = assets[ANIMACAO_ASTRONA]  # Pega lista de frames
         self.index = 0 
-        self.image = self.images[self.index] 
+        self.image = self.images[self.index] # Máscara do player 
         self.mask = pygame.mask.from_surface(self.image) 
- 
         
-        self.rect = self.image.get_rect()           # Área de contato do Player 
-        self.rect.centerx = WIDTH/8                 # Centro 
-        self.bottom = CHAO                          # Base = GRWOND (para ficar no chao)
-        self.rect.top = HEIGHT- player_HEIGHT -500  # Topo 
-        self.speedy = 0                             # Velocidade zerada 
-        self.speedx = 0 
+        # Posicionamento do player na tela
+        self.rect = self.image.get_rect() # Área de contato do Player 
+        self.rect.centerx = WIDTH/8                 
+        self.bottom = CHAO #para ficar no chao)
+        self.rect.top = HEIGHT- player_HEIGHT -500   
+        self.speedy = 0  # Velocidade zerada 
+        self.speedx = 0  # Velocidade zerada 
 
-
+    # Função que atualiza sprite do player 
     def update(self,assets):        
 
-        self.speedy += self.gravidade #GRAVIDADE    # Velocidade de queda é a Gravidade 
-        self.rect.y += self.speedy                  # Área de contato do player recebe velocidade e se move 
+        self.speedy += self.gravidade # Velocidade de queda é a Gravidade 
+        self.rect.y += self.speedy    # Área de contato do player recebe velocidade e se move 
         self.rect.x += self.speedx
 
         # Animação a partir de indice de lista de imagens 
@@ -111,8 +102,9 @@ class Player(pygame.sprite.Sprite):
             self.index = 0 
         self.image = self.images[self.index] 
         
+        #Animação do Player andando 
+        # Salva imagem antes de inverter (original)
         img_n_invertida = self.image
-
         # Inverte imagem em X 
         if self.indo_esquerda == True: 
             img_invetida_x = pygame.transform.flip (self.image, True, False)
@@ -121,7 +113,6 @@ class Player(pygame.sprite.Sprite):
             if self.gravidade<0: 
                 img_invetida_y = pygame.transform.flip (self.image, False, True)
                 self.image = img_invetida_y
-        
         if self.indo_direita == True: 
             self.image = img_n_invertida
             # Inverte imagem em Y 
@@ -137,9 +128,10 @@ class Player(pygame.sprite.Sprite):
         # Nao faz animacao se tiver parado ou pulando 
         if self.state==PARADO or self.state==PULANDO or self.state==CAINDO: 
             self.index = 0 
-                
 
-        if self.speedy > 0:               # Muda estado: Player caindo 
+        #########################################################################
+        # Muda estado: Player caindo
+        if self.speedy > 0:                
             self.state = CAINDO  
             
         # Se bater no chão, para de cair
@@ -161,7 +153,8 @@ class Player(pygame.sprite.Sprite):
         
         if self.rect.centerx<0: 
             self.rect.centerx = 0
-        
+    
+    # Método que inverte imagem do player 
     def vira(self): 
         x = 100
         y = 100
@@ -184,22 +177,21 @@ class Stars(pygame.sprite.Sprite):
     def __init__(self, img,assets):
 
         pygame.sprite.Sprite.__init__(self) 
+        # Área da tela que estrelas vão nascer 
         self.area_nascer = np.arange(star_WIDTH, WIDTH+100,50)
-
 
         self.state = PARADO 
         self.image = img  
         self.mask = pygame.mask.from_surface(self.image)
 
         self.rect = self.image.get_rect() 
-        self.rect.centerx = random.choice(self.area_nascer)
+        self.rect.centerx = random.choice(self.area_nascer) # Sorteia posicao pra plotar estrelinhas
         self.bottom = random.randint(0,CHAO)         
-        self.rect.top = self.bottom - star_HEIGHT  # Topo 
-        self.speedx = -5                           # Velocidade zerada 
-        self.speedy = 5                            #Estrela fica parada 
+        self.rect.top = self.bottom - star_HEIGHT   
+        self.speedx = -5                           # 
+        self.speedy = 5                          
 
-    #ATUALIZANDO A POSIÇÃO DA ESTRELA: 
-
+    # Atualizando a posiçào da estrela 
     def update(self,assets):
         self.rect.centerx += self.speedx
         self.rect.y += self.speedy
@@ -216,7 +208,6 @@ class Meteoros(pygame.sprite.Sprite):
     def __init__(self, img,assets):
 
         pygame.sprite.Sprite.__init__(self) 
-        #self.state = PARADO 
         self.image = img  
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect() 
@@ -226,8 +217,7 @@ class Meteoros(pygame.sprite.Sprite):
         self.speedx = random.choice(([-25,-15]))           # Velocidade em y 
         self.speedy = 1                                    #Velocidade em x  
 
-    #ATUALIZANDO A POSIÇÃO DO METEORO: 
-
+    # Atualizando posição dos meteoros 
     def update(self,assets):
          self.rect.centerx += self.speedx
          self.rect.y += self.speedy
@@ -243,19 +233,15 @@ all_sprites = pygame.sprite.Group()
 all_meteoros = pygame.sprite.Group()
 all_stars = pygame.sprite.Group() 
 
-#Cria stars 
-# Adicionando mais estrelas:
+#Cria Estrelas 
 n_estrelas= 5 
-
 for i in range(n_estrelas): 
     estrela = Stars(star_img_small,assets) 
     all_sprites.add(estrela)  
     all_stars.add(estrela) 
 
 #Cria Meteoros 
-# Adicionando mais meteoros: 
 n_meteoros =  3  
-
 for i in range(n_meteoros): 
     meteoro = Meteoros(meteoro_img_small,assets) 
     all_sprites.add(meteoro)  
@@ -267,40 +253,44 @@ JOGANDO = 1
 ACABADO = 3 
 GAMEOVER = 4
 RODANDO = 5
-# Fases 
-Fase1 = "F1"
-Fase2 = "F2"
+
 
 #################################  LOOP PRINCIPAL    ###############################################################################
 
 modo = TELA_INICIAL
 
+# Função que executa o jogo 
 def modo_jogo (window):
     modo = TELA_INICIAL
 
     while modo != ACABADO:
-        # variaveis para frear criacao de novos meteoros 
+        # variaveis para frear criação de novos meteoros 
         a = True 
         b = True 
         c = True 
 
+        # Conta quantidade de meteoros novos criados no jogo para tirá-los após game over 
         qtdMeteoros=0
         
+        # e toca no x, fecha tela 
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     modo = ACABADO
 
         modo = TELA_INICIAL
+
+        # Pontuacao zerada 
         score = 0
 
+        # habilita clock e carrega o assets 
         clock = pygame.time.Clock()
-        
         assets = load_assets()
 
+        # Tela de início 
         while modo != JOGANDO and modo != GAMEOVER and modo != RODANDO and modo != ACABADO:
             # Vidas 
             vidas = 3
-
+            # Fundo da tela incial 
             background = assets[TELADEINICIO]
             background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 
@@ -314,6 +304,7 @@ def modo_jogo (window):
             window.blit(background, (0,0))
             pygame.display.update()
 
+        # Fundo do nivel 1
         background = pygame.image.load(path.join(IMG_DIR, 'fundo\\fundo_planeta_vermelho.png')).convert()
         background = pygame.transform.scale(background, (WIDTH, HEIGHT))
         background_rect = background.get_rect()
@@ -327,8 +318,10 @@ def modo_jogo (window):
         assets[SOM_FUNDO].play(-1) 
         assets[SOM_FUNDO].set_volume(0.3)
 
+        # Estrutura do Jogo 
         while modo!= GAMEOVER and modo != RODANDO and modo != TELA_INICIAL and modo != ACABADO:
-            # Muda de fase 
+            # Mudança de fases
+            # Muda pra Fase 2  
             if score>=70 and score<130: 
                 background = assets[FUNDO_F2]
                 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
@@ -338,7 +331,7 @@ def modo_jogo (window):
                     all_meteoros.add(nov_meteoro) 
                     a = False 
                     qtdMeteoros+=1
-            
+            # Muda pra fase 3 
             if score>=130 and score<200: 
                 background = assets[FUNDO_F3]
                 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
@@ -348,8 +341,7 @@ def modo_jogo (window):
                     all_meteoros.add(nov_meteoro) 
                     b = False 
                     qtdMeteoros+=1
-
-
+            # Muda pra fase 4 
             if score>200: 
                 background = assets[FUNDO_F4]
                 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
@@ -360,8 +352,6 @@ def modo_jogo (window):
                     c = False 
                     qtdMeteoros+=1
 
-
-            
             clock.tick(FPS)                 # Velocidade do Jogo
 
             # Lê o teclado 
@@ -375,7 +365,7 @@ def modo_jogo (window):
                     if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
                         player.jump()
 
-                ##########  MOVIMENTAÇÃO OPCIONAL NO EIXO X ########################
+                ##########  MOVIMENTAÇÃO NO EIXO X ########################
                 if event.type == pygame.KEYDOWN:
                     # Dependendo da tecla, altera a velocidade.
                     if event.key == pygame.K_LEFT:
@@ -402,8 +392,8 @@ def modo_jogo (window):
                     if event.key == pygame.K_g:
                         player.gravidade*=-1
             
-            #COlisao 
-            # Estrelas
+            #Colisao 
+            # Colisao de Estrelas
             estrelas_tocadas = pygame.sprite.spritecollide(player,all_stars,True,pygame.sprite.collide_mask)  # lista de estrelas tocadas por player q saiem de all_stars
             if len(estrelas_tocadas)>0: 
                 
@@ -417,7 +407,7 @@ def modo_jogo (window):
 
                     score+=10 # Muda pontuação 
 
-            # Meteoros 
+            # Colisao de Meteoros 
             meteroros_tocados = pygame.sprite.spritecollide(player,all_meteoros,True,pygame.sprite.collide_mask)
             if len(meteroros_tocados)>0: 
                 vidas -=1 
@@ -431,7 +421,6 @@ def modo_jogo (window):
                     assets[SOM_METEORO].set_volume(0.2)
 
                 # Player com 3 vidas 
-                print(vidas)
                 if vidas>0:
                     all_sprites.add(player)
 
@@ -444,7 +433,8 @@ def modo_jogo (window):
             
                 print(vidas)
                 print(score)
-                
+            
+            # Tela Final ( Tela de game over)
             while modo != TELA_INICIAL and modo != JOGANDO and modo != RODANDO and modo != ACABADO:
 
                 background = assets[TELAFINAL]
@@ -505,9 +495,6 @@ pygame.mixer.init()
 
 # Tamanho da tela.
 window = pygame.display.set_mode((WIDTH, HEIGHT))
-
-# Nome do jogo
-# pygame.display.set_caption(TITULO)
 
 # Comando para evitar travamentos.
 try:
